@@ -1,26 +1,13 @@
-#include <SFML/Graphics.hpp>
+#include <iostream>
+#include "Tablero.h"
+
+using namespace std;
 
 int main() {
 	
-	sf::RenderWindow ventana(
-							 sf::VideoMode(800, 600),
-							 "Tetris"
-							 );
+	Tablero tablero;
 	
-	while (ventana.isOpen()) {
-		
-		sf::Event evento;
-		
-		while (ventana.pollEvent(evento)) {
-			
-			if (evento.type == sf::Event::Closed) {
-				ventana.close();
-			}
-		}
-		
-		ventana.clear();
-		ventana.display();
-	}
+	tablero.mostrarTablero();
 	
 	return 0;
 }

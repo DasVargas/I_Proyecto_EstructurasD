@@ -1,0 +1,12 @@
+# Archivos compilados de C/C++
+*.exe
+*.o
+*.obj
+
+# Carpetas de compilacion
+Debug/
+Release/
+
+# Archivos temporales
+*.tmp
+*.log

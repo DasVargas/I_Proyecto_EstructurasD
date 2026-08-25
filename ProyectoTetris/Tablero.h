@@ -19,6 +19,12 @@ public:
 	
 	void crearTablero();
 	void mostrarTablero();
+	void insertarFilaInicio();
+	bool filaCompleta(NodoFila* fila);
+	void eliminarFila(int posicion);
+	void limpiarFilas();
+	void llenarFila(int posicion);
+	int contarFilas();
 };
 
 #endif

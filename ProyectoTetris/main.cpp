@@ -1,30 +1,39 @@
 #include <iostream>
-#include "Tablero.h"
+#include "Pieza.h"
 
 using namespace std;
 
 int main() {
 	
-	Tablero tablero;
+	Pieza pieza('T');
 	
-	cout << "FILAS INICIALES: "<< tablero.contarFilas()<< endl;
+	cout << "Fila inicial: " << pieza.getFila() << endl;
+	cout << "Columna inicial: " << pieza.getColumna() << endl;
+	cout << "Orientacion inicial: " << pieza.getOrientacion() << endl;
+	
 	cout << endl;
 	
-	// Llenamos dos filas para probar
-	tablero.llenarFila(18);
-	tablero.llenarFila(19);
+	pieza.setFila(5);
+	pieza.setColumna(4);
 	
-	cout << "ANTES DE LIMPIAR:" << endl;
-	tablero.mostrarTablero();
+	cout << "Nueva fila: " << pieza.getFila() << endl;
+	cout << "Nueva columna: " << pieza.getColumna() << endl;
+	
 	cout << endl;
 	
-	tablero.limpiarFilas();
+	cout << "Celda [0][1]: " << pieza.getCelda(0, 1) << endl;
+	cout << "Celda [0][0]: " << pieza.getCelda(0, 0) << endl;
 	
-	cout << "DESPUES DE LIMPIAR:" << endl;
-	tablero.mostrarTablero();
 	cout << endl;
 	
-	cout << "FILAS DESPUES DE LIMPIAR: "<< tablero.contarFilas()<< endl;
+	pieza.rotar();
+	
+	cout << "Orientacion despues de rotar: "
+		<< pieza.getOrientacion() << endl;
+	
+	cout << endl;
+	
+	pieza.mostrarPieza();
 	
 	return 0;
 }

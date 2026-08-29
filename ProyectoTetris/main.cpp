@@ -1,39 +1,53 @@
 #include <iostream>
-#include "Pieza.h"
+#include <cstdlib>
+#include <ctime>
+#include "ColaPiezas.h"
 
 using namespace std;
 
 int main() {
 	
-	Pieza pieza('T');
+	srand(time(NULL));
 	
-	cout << "Fila inicial: " << pieza.getFila() << endl;
-	cout << "Columna inicial: " << pieza.getColumna() << endl;
-	cout << "Orientacion inicial: " << pieza.getOrientacion() << endl;
+	ColaPiezas cola;
 	
-	cout << endl;
+	cola.generarBolsa();
 	
-	pieza.setFila(5);
-	pieza.setColumna(4);
-	
-	cout << "Nueva fila: " << pieza.getFila() << endl;
-	cout << "Nueva columna: " << pieza.getColumna() << endl;
+	cout << "COLA INICIAL:" << endl;
+	cola.mostrar();
 	
 	cout << endl;
 	
-	cout << "Celda [0][1]: " << pieza.getCelda(0, 1) << endl;
-	cout << "Celda [0][0]: " << pieza.getCelda(0, 0) << endl;
+	cout << "Sacamos 5 piezas:" << endl;
+	
+	for (int i = 0; i < 5; i++) {
+		cout << cola.sacar() << " ";
+	}
+	
+	cout << endl << endl;
+	
+	cout << "COLA RESTANTE:" << endl;
+	cola.mostrar();
 	
 	cout << endl;
 	
-	pieza.rotar();
+	cout << "Cantidad restante: " << cola.contar() << endl;
 	
-	cout << "Orientacion despues de rotar: "
-		<< pieza.getOrientacion() << endl;
+	cola.mantenerCola();
 	
 	cout << endl;
 	
-	pieza.mostrarPieza();
+	cout << "COLA DESPUES DE MANTENER:" << endl;
+	cola.mostrar();
+	
+	cout << endl;
+	
+	cout << "Cantidad ahora: " << cola.contar() << endl;
+	
+	cout << endl;
+	
+	cout << "PROXIMAS 3:" << endl;
+	cola.mostrarProximas3();
 	
 	return 0;
 }

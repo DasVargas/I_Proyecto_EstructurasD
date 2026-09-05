@@ -206,3 +206,6 @@ void Pieza::rotar() {
 		orientacion = 0;
 	}
 }
+void Pieza::setOrientacion(int nuevaOrientacion) {
+	orientacion = nuevaOrientacion;
+}

@@ -26,6 +26,8 @@ public:
 	void setColumna(int nuevaColumna);
 	
 	int getCelda(int f, int c);
+	
+	void setOrientacion(int nuevaOrientacion);
 };
 
 #endif

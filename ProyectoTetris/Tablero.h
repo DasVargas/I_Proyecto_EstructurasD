@@ -25,6 +25,9 @@ public:
 	void limpiarFilas();
 	void llenarFila(int posicion);
 	int contarFilas();
+	
+	int getCelda(int fila, int columna);
+	void setCelda(int fila, int columna, int valor);
 };
 
 #endif

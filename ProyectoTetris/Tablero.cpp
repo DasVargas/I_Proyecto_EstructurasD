@@ -124,3 +124,25 @@ int Tablero::contarFilas() {
 	}
 	return contador;
 }
+
+int Tablero::getCelda(int fila, int columna) {
+	NodoFila* actual = cabeza;
+	for (int i = 0; i < fila && actual != nullptr; i++) {
+		actual = actual->siguiente;
+	}
+	if (actual == nullptr) {
+		return -1;
+	}
+	return actual->celdas[columna];
+}
+
+void Tablero::setCelda(int fila, int columna, int valor) {
+	NodoFila* actual = cabeza;
+	for (int i = 0; i < fila && actual != nullptr; i++) {
+		actual = actual->siguiente;
+	}
+	if (actual == nullptr) {
+		return;
+	}
+	actual->celdas[columna] = valor;
+}

@@ -100,58 +100,80 @@ int main() {
 					break;
 				}
 				case 4: {
-				
+					system("cls");
 					
 					Tablero tablero;
-					Pieza pieza('T');
+					ColaPiezas cola;
 					
+					cola.generarBolsa();
 					
-					char movimiento;
+					char continuar = 's';
 					
-					do {
+					while (continuar == 's' || continuar == 'S') {
 						
+						cola.mantenerCola();
 						
-						cout << "======= MOVIMIENTO =======" << endl;
-						cout << "A = Izquierda" << endl;
-						cout << "D = Derecha" << endl;
-						cout << "S = Abajo" << endl;
-						cout << "W = Rotar" << endl;
-						cout << "0 = Salir" << endl;
+						char tipo = cola.sacar();
+						
+						Pieza pieza(tipo);
+						
+						char movimiento;
 						
 						cout << endl;
-						cout << "Fila actual: " << pieza.getFila() << endl;
-						cout << "Columna actual: " << pieza.getColumna() << endl;
-						cout << "Orientacion actual: " << pieza.getOrientacion() << endl;
-						cout << endl;
-						cout << "Movimiento: ";
-						cin >> movimiento;
+						cout << "Pieza actual: " << tipo << endl;
 						
-						if (movimiento == 'a' || movimiento == 'A') {
-							moverIzquierda(pieza, tablero);
-						}
-						
-						if (movimiento == 'd' || movimiento == 'D') {
-							moverDerecha(pieza, tablero);
-						}
-						
-						if (movimiento == 's' || movimiento == 'S') {
+						do {
 							
-							if (!moverAbajo(pieza, tablero)) {
-								colocarPieza(pieza, tablero);
-								movimiento = '0';
+							cout << endl;
+							cout << "======= MOVIMIENTO =======" << endl;
+							cout << "A = Izquierda" << endl;
+							cout << "D = Derecha" << endl;
+							cout << "S = Abajo" << endl;
+							cout << "W = Rotar" << endl;
+							cout << "0 = Salir" << endl;
+							
+							cout << endl;
+							cout << "Fila actual: " << pieza.getFila() << endl;
+							cout << "Columna actual: " << pieza.getColumna() << endl;
+							cout << "Orientacion actual: " << pieza.getOrientacion() << endl;
+							
+							cout << endl;
+							cout << "Movimiento: ";
+							cin >> movimiento;
+							
+							if (movimiento == 'a' || movimiento == 'A') {
+								moverIzquierda(pieza, tablero);
 							}
-						}
-						if (movimiento == 'w' || movimiento == 'W') {
-							rotarPieza(pieza, tablero);
-						}
-					} while (movimiento != '0');
+							
+							if (movimiento == 'd' || movimiento == 'D') {
+								moverDerecha(pieza, tablero);
+							}
+							
+							if (movimiento == 's' || movimiento == 'S') {
+								
+								if (!moverAbajo(pieza, tablero)) {
+									
+									colocarPieza(pieza, tablero);
+									
+									movimiento = '0';
+								}
+							}
+							
+							if (movimiento == 'w' || movimiento == 'W') {
+								rotarPieza(pieza, tablero);
+							}
+							
+						} while (movimiento != '0');
+						
+						cout << endl;
+						cout << "======= TABLERO =======" << endl;
+						tablero.mostrarTablero();
+						
+						cout << endl;
+						cout << "Siguiente pieza? (S/N): ";
+						cin >> continuar;
+					}
 					
-					
-					cout << endl;
-					cout << "======= TABLERO CON PIEZA =======" << endl;
-					tablero.mostrarTablero();
-					
-					cout << endl;
 					system("pause");
 					break;
 				}

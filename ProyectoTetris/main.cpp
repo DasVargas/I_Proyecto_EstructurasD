@@ -117,6 +117,13 @@ int main() {
 						
 						Pieza pieza(tipo);
 						
+						if (!puedeMover(pieza, tablero, pieza.getFila(), pieza.getColumna())) {
+							cout << endl;
+							cout << "======= GAME OVER =======" << endl;
+							tablero.mostrarTablero();
+							break;
+						}
+						
 						char movimiento;
 						
 						cout << endl;

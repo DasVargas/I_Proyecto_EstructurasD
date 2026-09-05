@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include <SFML/System.hpp>
 
 #include "Tablero.h"
 #include "Pieza.h"
@@ -54,6 +55,7 @@ int main() {
 				cout << "2. Piezas" << endl;
 				cout << "3. Cola de piezas" << endl;
 				cout << "4. Movimiento y colisiones" << endl;
+				cout << "5. Caida automatica" << endl;
 				cout << "0. Volver" << endl;
 				cout << "========================" << endl;
 				cout << "Opcion: ";
@@ -104,7 +106,7 @@ int main() {
 					
 					Tablero tablero;
 					ColaPiezas cola;
-					
+				
 					cola.generarBolsa();
 					
 					char continuar = 's';
@@ -157,11 +159,9 @@ int main() {
 							}
 							
 							if (movimiento == 's' || movimiento == 'S') {
-								
 								if (!moverAbajo(pieza, tablero)) {
-									
 									colocarPieza(pieza, tablero);
-									
+									tablero.limpiarFilas();
 									movimiento = '0';
 								}
 							}
@@ -184,7 +184,47 @@ int main() {
 					system("pause");
 					break;
 				}
-				
+				case 5: {
+					system("cls");
+					
+					Tablero tablero;
+					ColaPiezas cola;
+					
+					cola.generarBolsa();
+					
+					char tipo = cola.sacar();
+					Pieza pieza(tipo);
+					
+					sf::Clock relojCaida;
+					
+					cout << "======= CAIDA AUTOMATICA =======" << endl;
+					cout << "Pieza: " << tipo << endl;
+					cout << endl;
+					
+					while (true) {
+						
+						if (relojCaida.getElapsedTime().asSeconds() >= 0.8f) {
+							
+							if (!moverAbajo(pieza, tablero)) {
+								colocarPieza(pieza, tablero);
+								tablero.limpiarFilas();
+								break;
+							}
+							
+							cout << "Fila actual: " << pieza.getFila() << endl;
+							
+							relojCaida.restart();
+						}
+					}
+					
+					cout << endl;
+					cout << "Pieza colocada." << endl;
+					tablero.mostrarTablero();
+					
+					cout << endl;
+					system("pause");
+					break;
+				}
 				case 0:
 					break;
 				default: {

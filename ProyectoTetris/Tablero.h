@@ -22,10 +22,9 @@ public:
 	void insertarFilaInicio();
 	bool filaCompleta(NodoFila* fila);
 	void eliminarFila(int posicion);
-	void limpiarFilas();
+	int limpiarFilas();
 	void llenarFila(int posicion);
 	int contarFilas();
-	
 	int getCelda(int fila, int columna);
 	void setCelda(int fila, int columna, int valor);
 };

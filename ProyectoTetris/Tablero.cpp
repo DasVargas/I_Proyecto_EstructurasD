@@ -84,22 +84,25 @@ void Tablero::eliminarFila(int posicion) {
 	actual->siguiente = borrar->siguiente;
 	delete borrar;
 }
-void Tablero::limpiarFilas() {
+int Tablero::limpiarFilas() {
 	NodoFila* actual = cabeza;
 	int posicion = 0;
+	int filasEliminadas = 0;
 	while (actual != nullptr) {
 		if (filaCompleta(actual)) {
 			NodoFila* siguiente = actual->siguiente;
 			eliminarFila(posicion);
 			insertarFilaInicio();
+			filasEliminadas++;
 			actual = siguiente;
-			posicion++;  
+			posicion++;
 		}
 		else {
 			actual = actual->siguiente;
 			posicion++;
 		}
 	}
+	return filasEliminadas;
 }
 
 void Tablero::llenarFila(int posicion) {

@@ -2,11 +2,12 @@
 #include <cstdlib>
 #include <ctime>
 #include <SFML/System.hpp>
-
+#include <SFML/Graphics.hpp>
 #include "Tablero.h"
 #include "Pieza.h"
 #include "ColaPiezas.h"
 #include "Movimiento.h"
+#include "Juego.h"
 
 using namespace std;
 
@@ -27,22 +28,7 @@ int main() {
 		switch (opcion) {
 			
 		case 1: {
-			system("cls");
-			
-			Tablero tablero;
-			
-			cout << "======= TABLERO =======" << endl;
-			
-			tablero.setCelda(5, 3, 1);
-			
-			cout << "Valor de la celda [5][3]: ";
-			cout << tablero.getCelda(5, 3) << endl;
-			
-			cout << endl;
-			tablero.mostrarTablero();
-			
-			cout << endl;
-			system("pause");
+			iniciarJuego();
 			break;
 		}
 		
@@ -106,7 +92,9 @@ int main() {
 					
 					Tablero tablero;
 					ColaPiezas cola;
-				
+					
+					int puntaje = 0;
+					
 					cola.generarBolsa();
 					
 					char continuar = 's';
@@ -161,7 +149,7 @@ int main() {
 							if (movimiento == 's' || movimiento == 'S') {
 								if (!moverAbajo(pieza, tablero)) {
 									colocarPieza(pieza, tablero);
-									tablero.limpiarFilas();
+									//int lineas = tablero.limpiarFilas();
 									movimiento = '0';
 								}
 							}

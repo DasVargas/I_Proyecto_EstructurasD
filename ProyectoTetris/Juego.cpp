@@ -5,12 +5,14 @@
 #include "Historial.h"
 #include "ColaEventos.h"
 #include <string>
+#include <iostream>
+using namespace std;
 
 void dibujarTablero(sf::RenderWindow& ventana, Tablero& tablero) {
 	for (int fila = 0; fila < FILAS; fila++) {
 		for (int columna = 0; columna < COLUMNAS; columna++) {
 			sf::RectangleShape celda(sf::Vector2f(30, 30));
-			celda.setPosition(50 + columna * 30, 50 + fila * 30);
+			celda.setPosition(300 + columna * 30, 50 + fila * 30);
 			
 			int valor = tablero.getCelda(fila, columna);
 			
@@ -38,7 +40,7 @@ void dibujarPieza(sf::RenderWindow& ventana, Pieza& pieza) {
 				sf::RectangleShape celda(sf::Vector2f(30, 30));
 				
 				celda.setPosition(
-				50 + (pieza.getColumna() + columna) * 30,
+				300 + (pieza.getColumna() + columna) * 30,
 				50 + (pieza.getFila() + fila) * 30);
 				
 				celda.setFillColor(obtenerColor(pieza.getValor()));
@@ -52,8 +54,7 @@ void dibujarPieza(sf::RenderWindow& ventana, Pieza& pieza) {
 }
 
 
-bool colocarYSiguiente(Pieza& pieza, Tablero& tablero, ColaPiezas& cola,
-					   int& puntaje, bool& usoHold, int& lineasEliminadas) {
+bool colocarYSiguiente(Pieza& pieza, Tablero& tablero, ColaPiezas& cola, int& puntaje, bool& usoHold, int& lineasEliminadas) {
 	colocarPieza(pieza, tablero);
 	lineasEliminadas = tablero.limpiarFilas();
 	puntaje += calcularPuntos(lineasEliminadas);
@@ -69,7 +70,13 @@ bool colocarYSiguiente(Pieza& pieza, Tablero& tablero, ColaPiezas& cola,
 
 
 void iniciarJuego() {
-	sf::RenderWindow ventana(sf::VideoMode(600, 800), "Tetris");
+	sf::RenderWindow ventana(sf::VideoMode(900, 750), "Tetris");
+	sf::Font fuente;
+	
+	if (!fuente.loadFromFile("assets/fonts/Roboto.ttf")) {
+		cout << "Error al cargar la fuente" << endl;
+	}
+	
 	Tablero tablero;
 	
 	ColaPiezas cola;
@@ -90,10 +97,12 @@ void iniciarJuego() {
 	bool gameOver = false;
 	int puntaje = 0;
 	int lineasEliminadas = 0;
+	int totalLineas = 0;
 	
 	bool usoHold = false;
 	bool enReplay = false;
 	bool replayTerminado = false;
+	bool pausado = false;
 	
 	while (ventana.isOpen()) {
 		sf::Event evento;
@@ -101,7 +110,14 @@ void iniciarJuego() {
 			if (evento.type == sf::Event::Closed) {
 				ventana.close();
 			}
-			if (evento.type == sf::Event::KeyPressed && !gameOver) {
+			if (evento.type == sf::Event::KeyPressed &&
+				evento.key.code == sf::Keyboard::P && !gameOver) {
+				
+				pausado = !pausado;
+				
+				relojCaida.restart();
+			}
+			if (evento.type == sf::Event::KeyPressed && !gameOver && !pausado) {
 				if (evento.key.code == sf::Keyboard::A) {
 					int columnaAnterior = pieza.getColumna();
 					moverIzquierda(pieza, tablero);
@@ -121,16 +137,22 @@ void iniciarJuego() {
 						registrarMovimiento(historial, 'B', pieza, tablero);
 					}
 					else {
-						if (!colocarYSiguiente(pieza, tablero, cola, puntaje, usoHold, lineasEliminadas)) {
+						bool continua = colocarYSiguiente(pieza, tablero, cola, puntaje, usoHold, lineasEliminadas);
+						
+						totalLineas += lineasEliminadas;
+						
+						if (!continua) {
 							gameOver = true;
 							eventos.insertar("GAME OVER", 1);
 							ventana.setTitle("Tetris - GAME OVER");
 						}
 						else {
 							eventos.insertar("PIEZA COLOCADA", 3);
+							
 							if (lineasEliminadas > 0) {
 								eventos.insertar("LINEA ELIMINADA", 2);
 							}
+							
 							registrarMovimiento(historial, 'P', pieza, tablero);
 						}
 					}
@@ -183,12 +205,16 @@ void iniciarJuego() {
 			}
 		}
 		
-		if (!gameOver && relojCaida.getElapsedTime().asSeconds() >= tiempoCaida) {
+		if (!gameOver && !pausado &&relojCaida.getElapsedTime().asSeconds() >= tiempoCaida) {
 			if (moverAbajo(pieza, tablero)) {
 				registrarMovimiento(historial, 'B', pieza, tablero);
 			}
 			else {
-				if (!colocarYSiguiente(pieza, tablero, cola, puntaje, usoHold, lineasEliminadas)) {
+				bool continua = colocarYSiguiente(pieza, tablero, cola, puntaje, usoHold, lineasEliminadas);
+				
+				totalLineas += lineasEliminadas;
+				
+				if (!continua) {
 					gameOver = true;
 					eventos.insertar("GAME OVER", 1);
 					ventana.setTitle("Tetris - GAME OVER");
@@ -211,7 +237,17 @@ void iniciarJuego() {
 		dibujarHold(ventana, hold);
 		dibujarProximas3(ventana, cola);
 		
-		if (!gameOver) {
+		escribirTexto(ventana, fuente, "HOLD", 120, 35, 22);
+		escribirTexto(ventana, fuente, "NEXT", 720, 35, 22);
+		
+		escribirTexto(ventana, fuente, "SCORE\n" + std::to_string(puntaje), 110, 350, 22);
+		escribirTexto(ventana, fuente, "LINES\n" + std::to_string(totalLineas), 110, 450, 22);
+		
+		if (pausado) {
+			dibujarPieza(ventana, pieza);
+			ventana.setTitle("Tetris - PAUSA");
+		}
+		else if (!gameOver) {
 			dibujarPieza(ventana, pieza);
 			ventana.setTitle("Tetris - Puntaje: " + std::to_string(puntaje));
 		}
@@ -229,7 +265,7 @@ void iniciarJuego() {
 }
 void dibujarHold(sf::RenderWindow& ventana, PilaHold& hold) {
 	sf::RectangleShape cuadro(sf::Vector2f(170, 150));
-	cuadro.setPosition(390, 50);
+	cuadro.setPosition(70, 70);
 	cuadro.setFillColor(sf::Color::Black);
 	cuadro.setOutlineColor(sf::Color::White);
 	cuadro.setOutlineThickness(2);
@@ -248,9 +284,8 @@ void dibujarHold(sf::RenderWindow& ventana, PilaHold& hold) {
 				sf::RectangleShape celda(sf::Vector2f(25, 25));
 				
 				celda.setPosition(
-				420 + columna * 25,
-				75 + fila * 25
-				);
+				105 + columna * 25,
+				100 + fila * 25);
 				
 				celda.setFillColor(obtenerColor(piezaHold.getValor()));
 				celda.setOutlineColor(sf::Color::White);
@@ -266,7 +301,7 @@ void registrarMovimiento(Historial& historial, char movimiento, Pieza& pieza, Ta
 }
 void dibujarProximas3(sf::RenderWindow& ventana, ColaPiezas& cola) {
 	sf::RectangleShape cuadro(sf::Vector2f(170, 350));
-	cuadro.setPosition(390, 220);
+	cuadro.setPosition(660, 70);
 	cuadro.setFillColor(sf::Color::Black);
 	cuadro.setOutlineColor(sf::Color::White);
 	cuadro.setOutlineThickness(2);
@@ -283,7 +318,7 @@ void dibujarProximas3(sf::RenderWindow& ventana, ColaPiezas& cola) {
 				for (int columna = 0; columna < 4; columna++) {
 					if (siguiente.getCelda(fila, columna) == 1) {
 						sf::RectangleShape celda(sf::Vector2f(20, 20));
-						celda.setPosition(430 + columna * 20,245 + p * 100 + fila * 20);
+						celda.setPosition(705 + columna * 20, 100 + p * 100 + fila * 20);
 						celda.setFillColor(obtenerColor(siguiente.getValor()));
 						celda.setOutlineColor(sf::Color::White);
 						celda.setOutlineThickness(1);
@@ -319,4 +354,16 @@ sf::Color obtenerColor(int valor) {
 		return sf::Color(255, 165, 0);
 	
 	return sf::Color::Black;
+}
+
+void escribirTexto(sf::RenderWindow& ventana, sf::Font& fuente, string texto, int x, int y, int tamano) {
+	sf::Text mensaje;
+	
+	mensaje.setFont(fuente);
+	mensaje.setString(texto);
+	mensaje.setCharacterSize(tamano);
+	mensaje.setFillColor(sf::Color::White);
+	mensaje.setPosition(x, y);
+	
+	ventana.draw(mensaje);
 }

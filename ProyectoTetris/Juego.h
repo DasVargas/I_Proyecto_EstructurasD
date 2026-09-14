@@ -7,6 +7,8 @@
 #include "ColaPiezas.h"
 #include "PilaHold.h"
 #include "Historial.h"
+#include <string>
+using namespace std;
 
 void dibujarTablero(sf::RenderWindow& ventana, Tablero& tablero);
 void dibujarPieza(sf::RenderWindow& ventana, Pieza& pieza);
@@ -19,4 +21,5 @@ void registrarMovimiento(Historial& historial, char movimiento, Pieza& pieza, Ta
 void dibujarProximas3(sf::RenderWindow& ventana, ColaPiezas& cola);
 
 sf::Color obtenerColor(int valor);
+void escribirTexto(sf::RenderWindow& ventana,sf::Font& fuente, string texto, int x, int y, int tamano);
 #endif

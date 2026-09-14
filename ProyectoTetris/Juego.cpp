@@ -1,6 +1,7 @@
 #include "Juego.h"
 #include "Movimiento.h"
-
+#include "Puntaje.h"
+#include <string>
 
 void dibujarTablero(sf::RenderWindow& ventana, Tablero& tablero) {
 	for (int fila = 0; fila < FILAS; fila++) {
@@ -44,13 +45,13 @@ void dibujarPieza(sf::RenderWindow& ventana, Pieza& pieza) {
 }
 
 
-bool colocarYSiguiente(Pieza& pieza, Tablero& tablero, ColaPiezas& cola) {
+bool colocarYSiguiente(Pieza& pieza, Tablero& tablero, ColaPiezas& cola, int& puntaje) {
 	colocarPieza(pieza, tablero);
-	tablero.limpiarFilas();
+	int lineas = tablero.limpiarFilas();
+	puntaje += calcularPuntos(lineas);
 	cola.mantenerCola();
 	char tipo = cola.sacar();
 	pieza = Pieza(tipo);
-	
 	if (!puedeMover(pieza, tablero, pieza.getFila(), pieza.getColumna())) {
 		return false;
 	}
@@ -72,6 +73,7 @@ void iniciarJuego() {
 	
 	float tiempoCaida = 1.0f;
 	bool gameOver = false;
+	int puntaje = 0;
 	
 	while (ventana.isOpen()) {
 		sf::Event evento;
@@ -88,7 +90,7 @@ void iniciarJuego() {
 				}
 				if (evento.key.code == sf::Keyboard::S) {
 					if (!moverAbajo(pieza, tablero)) {
-						if (!colocarYSiguiente(pieza, tablero, cola)) {
+						if (!colocarYSiguiente(pieza, tablero, cola, puntaje)) {
 							gameOver = true;
 							ventana.setTitle("Tetris - GAME OVER");
 						}
@@ -102,7 +104,7 @@ void iniciarJuego() {
 		
 		if (!gameOver && relojCaida.getElapsedTime().asSeconds() >= tiempoCaida) {
 			if (!moverAbajo(pieza, tablero)) {
-				if (!colocarYSiguiente(pieza, tablero, cola)) {
+				if (!colocarYSiguiente(pieza, tablero, cola, puntaje )) {
 					gameOver = true;
 					ventana.setTitle("Tetris - GAME OVER");
 				}
@@ -115,7 +117,9 @@ void iniciarJuego() {
 		
 		if (!gameOver) {
 			dibujarPieza(ventana, pieza);
+			ventana.setTitle("Tetris - Puntaje: " + std::to_string(puntaje));
 		}
+		
 		ventana.display();
 	}
 }

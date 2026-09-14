@@ -8,7 +8,7 @@
 
 void dibujarTablero(sf::RenderWindow& ventana, Tablero& tablero);
 void dibujarPieza(sf::RenderWindow& ventana, Pieza& pieza);
-bool colocarYSiguiente(Pieza& pieza, Tablero& tablero, ColaPiezas& cola);
+bool colocarYSiguiente(Pieza& pieza, Tablero& tablero, ColaPiezas& cola, int& puntaje);
 void iniciarJuego();
 
 #endif

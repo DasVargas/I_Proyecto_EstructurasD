@@ -50,6 +50,7 @@ int main() {
 				cout << "9. Insertion Sort puntajes" << endl;
 				cout << "10. Mostrar Top 10" << endl;
 				cout << "11. Merge Sort puntajes" << endl;
+				cout << "12. Comparar ordenamientos" << endl;
 				cout << "0. Volver" << endl;
 				cout << "========================" << endl;
 				cout << "Opcion: ";
@@ -317,6 +318,17 @@ int main() {
 					cout << endl;
 					
 					system("pause");
+					break;
+				}
+				case 12: {
+					
+					system("cls");
+					
+					compararOrdenamientos();
+					
+					cout << endl;
+					system("pause");
+					
 					break;
 				}
 				case 0:

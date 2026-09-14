@@ -1,6 +1,8 @@
 #include "Puntaje.h"
 #include <fstream>
 #include <iostream>
+#include <chrono>
+#include <cstdlib>
 
 int calcularPuntos(int lineas) {
 	
@@ -98,8 +100,7 @@ void mergeSort(RegistroPuntaje puntajes[], int inicio, int fin) {
 }
 
 void merge(RegistroPuntaje puntajes[], int inicio, int medio, int fin) {
-	RegistroPuntaje auxiliar[10000];
-	
+	static RegistroPuntaje auxiliar[10000];
 	int i = inicio;
 	int j = medio + 1;
 	int k = inicio;
@@ -131,5 +132,59 @@ void merge(RegistroPuntaje puntajes[], int inicio, int medio, int fin) {
 	
 	for (int x = inicio; x <= fin; x++) {
 		puntajes[x] = auxiliar[x];
+	}
+}
+
+void compararOrdenamientos() {
+	int tamanos[4] = {10, 100, 1000, 10000};
+	
+	cout << "======= COMPARACION DE ORDENAMIENTOS =======" << endl;
+	cout << endl;
+	
+	for (int t = 0; t < 4; t++) {
+		
+		int cantidad = tamanos[t];
+		
+		RegistroPuntaje* datos = new RegistroPuntaje[cantidad];
+		RegistroPuntaje* datosInsertion = new RegistroPuntaje[cantidad];
+		RegistroPuntaje* datosMerge = new RegistroPuntaje[cantidad];
+		
+		// Generamos los mismos datos para ambos algoritmos
+		for (int i = 0; i < cantidad; i++) {
+			
+			datos[i].nombre = "Jugador";
+			datos[i].puntaje = rand() % 100000;
+			
+			datosInsertion[i] = datos[i];
+			datosMerge[i] = datos[i];
+		}
+		
+		// INSERTION SORT
+		auto inicioInsertion = chrono::high_resolution_clock::now();
+		
+		insertionSort(datosInsertion, cantidad);
+		
+		auto finInsertion = chrono::high_resolution_clock::now();
+		
+		chrono::duration<double, milli> tiempoInsertion = finInsertion - inicioInsertion;
+		
+		// MERGE SORT
+		auto inicioMerge = chrono::high_resolution_clock::now();
+		
+		mergeSort(datosMerge, 0, cantidad - 1);
+		
+		auto finMerge = chrono::high_resolution_clock::now();
+		
+		chrono::duration<double, milli> tiempoMerge = finMerge - inicioMerge;
+		
+		// Mostrar resultados
+		cout << "Cantidad: " << cantidad << endl;
+		
+		cout << "Insertion Sort: "<< tiempoInsertion.count()<< " ms" << endl;
+		cout << "Merge Sort: "<< tiempoMerge.count() << " ms" << endl;
+		
+		delete[] datos;
+		delete[] datosInsertion;
+		delete[] datosMerge;
 	}
 }

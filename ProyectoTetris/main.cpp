@@ -9,6 +9,8 @@
 #include "Movimiento.h"
 #include "Juego.h"
 #include "ColaEventos.h"
+#include "Puntaje.h"
+
 using namespace std;
 
 int main() {
@@ -43,6 +45,10 @@ int main() {
 				cout << "4. Movimiento y colisiones" << endl;
 				cout << "5. Caida automatica" << endl;
 				cout << "6. prueba"<<endl;
+				cout << "7. Guardar puntaje" << endl;
+				cout << "8. Mostrar puntajes" << endl;
+				cout << "9. Insertion Sort puntajes" << endl;
+				cout << "10. Mostrar Top 10" << endl;
 				cout << "0. Volver" << endl;
 				cout << "========================" << endl;
 				cout << "Opcion: ";
@@ -222,6 +228,67 @@ int main() {
 					eventos.insertar("LINEA ELIMINADA", 2);
 					
 					eventos.mostrar();
+					system("pause");
+					break;
+				}
+				case 7:{
+						string nombre;
+						int puntaje;
+						
+						cout << "======= GUARDAR PUNTAJE =======" << endl;
+						
+						cout << "Nombre: ";
+						cin >> nombre;
+						
+						cout << "Puntaje: ";
+						cin >> puntaje;
+						
+						guardarPuntaje(nombre, puntaje);
+						
+						cout << endl;
+						cout << "Puntaje guardado correctamente." << endl;
+						
+						system("pause");
+						break;
+					}
+				case 8: {
+							system("cls");
+							
+							cout << "======= PUNTAJES =======" << endl;
+							
+							mostrarPuntajes();
+							
+							cout << endl;
+							system("pause");
+							break;
+						}
+				case 9: {
+					RegistroPuntaje puntajes[5] = {
+						{"Das", 806},
+					{"Pepe", 400},
+						{"Ana", 1200},
+					{"Luis", 250},
+						{"Maria", 950}
+					};
+					
+					insertionSort(puntajes, 5);
+					
+					cout << "======= INSERTION SORT =======" << endl;
+					
+					for (int i = 0; i < 5; i++) {
+						cout << puntajes[i].nombre
+							<< " - "
+							<< puntajes[i].puntaje << endl;
+					}
+					
+					cout << endl;
+					system("pause");
+					break;
+				}
+				case 10: {
+					mostrarTop10();
+					
+					cout << endl;
 					system("pause");
 					break;
 				}

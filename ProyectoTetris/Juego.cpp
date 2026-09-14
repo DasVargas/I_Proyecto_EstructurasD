@@ -2,6 +2,7 @@
 #include "Movimiento.h"
 #include "Puntaje.h"
 #include "PilaHold.h"
+#include "Historial.h"
 #include <string>
 
 void dibujarTablero(sf::RenderWindow& ventana, Tablero& tablero) {
@@ -69,17 +70,21 @@ void iniciarJuego() {
 	cola.generarBolsa();
 	
 	PilaHold hold;
+	Historial historial;
 	
 	char tipo = cola.sacar();
 	Pieza pieza(tipo);
+	
+	historial.agregar('0', pieza, tablero);
 	
 	sf::Clock relojCaida;
 	
 	float tiempoCaida = 1.0f;
 	bool gameOver = false;
 	int puntaje = 0;
-	
 	bool usoHold = false;
+	bool enReplay = false;
+	bool replayTerminado = false;
 	
 	while (ventana.isOpen()) {
 		sf::Event evento;
@@ -89,21 +94,39 @@ void iniciarJuego() {
 			}
 			if (evento.type == sf::Event::KeyPressed && !gameOver) {
 				if (evento.key.code == sf::Keyboard::A) {
+					int columnaAnterior = pieza.getColumna();
 					moverIzquierda(pieza, tablero);
+					if (pieza.getColumna() != columnaAnterior) {
+						registrarMovimiento(historial, 'I', pieza, tablero);
+					}
 				}
 				if (evento.key.code == sf::Keyboard::D) {
+					int columnaAnterior = pieza.getColumna();
 					moverDerecha(pieza, tablero);
+					if (pieza.getColumna() != columnaAnterior) {
+						registrarMovimiento(historial, 'D', pieza, tablero);
+					}
 				}
 				if (evento.key.code == sf::Keyboard::S) {
-					if (!moverAbajo(pieza, tablero)) {
-						if (!colocarYSiguiente(pieza, tablero, cola, puntaje,usoHold)) {
+					if (moverAbajo(pieza, tablero)) {
+						registrarMovimiento(historial, 'B', pieza, tablero);
+					}
+					else {
+						if (!colocarYSiguiente(pieza, tablero, cola, puntaje, usoHold)) {
 							gameOver = true;
 							ventana.setTitle("Tetris - GAME OVER");
+						}
+						else {
+							registrarMovimiento(historial, 'P', pieza, tablero);
 						}
 					}
 				}
 				if (evento.key.code == sf::Keyboard::W) {
+					int orientacionAnterior = pieza.getOrientacion();
 					rotarPieza(pieza, tablero);
+					if (pieza.getOrientacion() != orientacionAnterior) {
+						registrarMovimiento(historial, 'R', pieza, tablero);
+					}
 				}
 				if (evento.key.code == sf::Keyboard::C && !usoHold) {
 					char tipoActual = pieza.getTipo();
@@ -120,18 +143,49 @@ void iniciarJuego() {
 					}
 					usoHold = true;
 				}
+				if (evento.key.code == sf::Keyboard::Z) {
+					if (historial.deshacer(pieza, tablero)) {
+						relojCaida.restart();
+					}
+				}
+				if (evento.key.code == sf::Keyboard::Y) {
+					if (historial.rehacer(pieza, tablero)) {
+						relojCaida.restart();
+					}
+				}
+			}
+			if (evento.type == sf::Event::KeyPressed && gameOver) {
+				if (evento.key.code == sf::Keyboard::R) {
+					historial.iniciarReplay(pieza, tablero);
+					enReplay = true;
+					replayTerminado = false;
+				}
+				if (evento.key.code == sf::Keyboard::Space && enReplay) {
+					if (!historial.avanzarReplay(pieza, tablero)) {
+						enReplay = false;
+						replayTerminado = true;
+					}
+				}
 			}
 		}
 		
 		if (!gameOver && relojCaida.getElapsedTime().asSeconds() >= tiempoCaida) {
-			if (!moverAbajo(pieza, tablero)) {
-				if (!colocarYSiguiente(pieza, tablero, cola, puntaje,usoHold )) {
+			if (moverAbajo(pieza, tablero)) {
+				registrarMovimiento(historial, 'B', pieza, tablero);
+			}
+			else {
+				if (!colocarYSiguiente(pieza, tablero, cola, puntaje, usoHold)) {
 					gameOver = true;
 					ventana.setTitle("Tetris - GAME OVER");
 				}
+				else {
+					registrarMovimiento(historial, 'P', pieza, tablero);
+				}
 			}
+			
 			relojCaida.restart();
 		}
+		
 		ventana.clear();
 		
 		dibujarTablero(ventana, tablero);
@@ -140,6 +194,14 @@ void iniciarJuego() {
 		if (!gameOver) {
 			dibujarPieza(ventana, pieza);
 			ventana.setTitle("Tetris - Puntaje: " + std::to_string(puntaje));
+		}
+		else if (enReplay) {
+			dibujarPieza(ventana, pieza);
+			ventana.setTitle("Tetris - REPLAY");
+		}
+		else if (replayTerminado) {
+			dibujarPieza(ventana, pieza);
+			ventana.setTitle("Tetris - REPLAY TERMINADO");
 		}
 		
 		ventana.display();
@@ -178,4 +240,7 @@ void dibujarHold(sf::RenderWindow& ventana, PilaHold& hold) {
 			}
 		}
 	}
+}
+void registrarMovimiento(Historial& historial, char movimiento, Pieza& pieza, Tablero& tablero) {
+	historial.agregar(movimiento, pieza, tablero);
 }

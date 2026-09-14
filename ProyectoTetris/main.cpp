@@ -49,6 +49,7 @@ int main() {
 				cout << "8. Mostrar puntajes" << endl;
 				cout << "9. Insertion Sort puntajes" << endl;
 				cout << "10. Mostrar Top 10" << endl;
+				cout << "11. Merge Sort puntajes" << endl;
 				cout << "0. Volver" << endl;
 				cout << "========================" << endl;
 				cout << "Opcion: ";
@@ -289,6 +290,32 @@ int main() {
 					mostrarTop10();
 					
 					cout << endl;
+					system("pause");
+					break;
+				}
+				case 11: {
+					system("cls");
+					
+					RegistroPuntaje puntajes[5] = {
+						{"Das", 806},
+					{"Pepe", 400},
+						{"Ana", 1200},
+					{"Luis", 250},
+						{"Maria", 950}
+					};
+					
+					mergeSort(puntajes, 0, 4);
+					
+					cout << "======= MERGE SORT =======" << endl;
+					
+					for (int i = 0; i < 5; i++) {
+						cout << puntajes[i].nombre
+							<< " - "
+							<< puntajes[i].puntaje << endl;
+					}
+					
+					cout << endl;
+					
 					system("pause");
 					break;
 				}

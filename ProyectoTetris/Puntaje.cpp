@@ -85,3 +85,51 @@ void mostrarTop10() {
 		<< endl;
 	}
 }
+
+void mergeSort(RegistroPuntaje puntajes[], int inicio, int fin) {
+	if (inicio < fin) {
+		int medio = (inicio + fin) / 2;
+		
+		mergeSort(puntajes, inicio, medio);
+		mergeSort(puntajes, medio + 1, fin);
+		
+		merge(puntajes, inicio, medio, fin);
+	}
+}
+
+void merge(RegistroPuntaje puntajes[], int inicio, int medio, int fin) {
+	RegistroPuntaje auxiliar[10000];
+	
+	int i = inicio;
+	int j = medio + 1;
+	int k = inicio;
+	
+	while (i <= medio && j <= fin) {
+		if (puntajes[i].puntaje >= puntajes[j].puntaje) {
+			auxiliar[k] = puntajes[i];
+			i++;
+		}
+		else {
+			auxiliar[k] = puntajes[j];
+			j++;
+		}
+		
+		k++;
+	}
+	
+	while (i <= medio) {
+		auxiliar[k] = puntajes[i];
+		i++;
+		k++;
+	}
+	
+	while (j <= fin) {
+		auxiliar[k] = puntajes[j];
+		j++;
+		k++;
+	}
+	
+	for (int x = inicio; x <= fin; x++) {
+		puntajes[x] = auxiliar[x];
+	}
+}

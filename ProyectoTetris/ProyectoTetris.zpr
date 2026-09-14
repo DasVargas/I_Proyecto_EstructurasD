@@ -19,7 +19,7 @@ current_source=main.cpp
 path_char=\
 [source]
 path=main.cpp
-cursor=287:14
+cursor=319:0
 open=true
 [source]
 path=Tablero.cpp

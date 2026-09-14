@@ -1,6 +1,7 @@
 #include "Juego.h"
 #include "Movimiento.h"
 #include "Puntaje.h"
+#include "PilaHold.h"
 #include <string>
 
 void dibujarTablero(sf::RenderWindow& ventana, Tablero& tablero) {
@@ -45,13 +46,14 @@ void dibujarPieza(sf::RenderWindow& ventana, Pieza& pieza) {
 }
 
 
-bool colocarYSiguiente(Pieza& pieza, Tablero& tablero, ColaPiezas& cola, int& puntaje) {
+bool colocarYSiguiente(Pieza& pieza, Tablero& tablero, ColaPiezas& cola, int& puntaje, bool& usoHold) {
 	colocarPieza(pieza, tablero);
 	int lineas = tablero.limpiarFilas();
 	puntaje += calcularPuntos(lineas);
 	cola.mantenerCola();
 	char tipo = cola.sacar();
 	pieza = Pieza(tipo);
+	usoHold = false;
 	if (!puedeMover(pieza, tablero, pieza.getFila(), pieza.getColumna())) {
 		return false;
 	}
@@ -66,6 +68,8 @@ void iniciarJuego() {
 	ColaPiezas cola;
 	cola.generarBolsa();
 	
+	PilaHold hold;
+	
 	char tipo = cola.sacar();
 	Pieza pieza(tipo);
 	
@@ -74,6 +78,8 @@ void iniciarJuego() {
 	float tiempoCaida = 1.0f;
 	bool gameOver = false;
 	int puntaje = 0;
+	
+	bool usoHold = false;
 	
 	while (ventana.isOpen()) {
 		sf::Event evento;
@@ -90,7 +96,7 @@ void iniciarJuego() {
 				}
 				if (evento.key.code == sf::Keyboard::S) {
 					if (!moverAbajo(pieza, tablero)) {
-						if (!colocarYSiguiente(pieza, tablero, cola, puntaje)) {
+						if (!colocarYSiguiente(pieza, tablero, cola, puntaje,usoHold)) {
 							gameOver = true;
 							ventana.setTitle("Tetris - GAME OVER");
 						}
@@ -99,12 +105,27 @@ void iniciarJuego() {
 				if (evento.key.code == sf::Keyboard::W) {
 					rotarPieza(pieza, tablero);
 				}
+				if (evento.key.code == sf::Keyboard::C && !usoHold) {
+					char tipoActual = pieza.getTipo();
+					if (hold.estaVacia()) {
+						hold.guardar(tipoActual);
+						cola.mantenerCola();
+						char siguiente = cola.sacar();
+						pieza = Pieza(siguiente);
+					}
+					else {
+						char tipoHold = hold.sacar();
+						hold.guardar(tipoActual);
+						pieza = Pieza(tipoHold);
+					}
+					usoHold = true;
+				}
 			}
 		}
 		
 		if (!gameOver && relojCaida.getElapsedTime().asSeconds() >= tiempoCaida) {
 			if (!moverAbajo(pieza, tablero)) {
-				if (!colocarYSiguiente(pieza, tablero, cola, puntaje )) {
+				if (!colocarYSiguiente(pieza, tablero, cola, puntaje,usoHold )) {
 					gameOver = true;
 					ventana.setTitle("Tetris - GAME OVER");
 				}
@@ -114,6 +135,7 @@ void iniciarJuego() {
 		ventana.clear();
 		
 		dibujarTablero(ventana, tablero);
+		dibujarHold(ventana, hold);
 		
 		if (!gameOver) {
 			dibujarPieza(ventana, pieza);
@@ -121,5 +143,39 @@ void iniciarJuego() {
 		}
 		
 		ventana.display();
+	}
+}
+void dibujarHold(sf::RenderWindow& ventana, PilaHold& hold) {
+	sf::RectangleShape cuadro(sf::Vector2f(170, 150));
+	cuadro.setPosition(390, 50);
+	cuadro.setFillColor(sf::Color::Black);
+	cuadro.setOutlineColor(sf::Color::White);
+	cuadro.setOutlineThickness(2);
+	
+	ventana.draw(cuadro);
+	
+	if (hold.estaVacia()) {
+		return;
+	}
+	
+	Pieza piezaHold(hold.verTipo());
+	
+	for (int fila = 0; fila < 4; fila++) {
+		for (int columna = 0; columna < 4; columna++) {
+			if (piezaHold.getCelda(fila, columna) == 1) {
+				sf::RectangleShape celda(sf::Vector2f(25, 25));
+				
+				celda.setPosition(
+				420 + columna * 25,
+				75 + fila * 25
+				);
+				
+				celda.setFillColor(sf::Color::Green);
+				celda.setOutlineColor(sf::Color::White);
+				celda.setOutlineThickness(1);
+				
+				ventana.draw(celda);
+			}
+		}
 	}
 }

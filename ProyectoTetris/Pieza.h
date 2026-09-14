@@ -28,6 +28,8 @@ public:
 	int getCelda(int f, int c);
 	
 	void setOrientacion(int nuevaOrientacion);
+	
+	char getTipo();
 };
 
 #endif

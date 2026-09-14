@@ -209,3 +209,6 @@ void Pieza::rotar() {
 void Pieza::setOrientacion(int nuevaOrientacion) {
 	orientacion = nuevaOrientacion;
 }
+char Pieza::getTipo() {
+	return tipo;
+}

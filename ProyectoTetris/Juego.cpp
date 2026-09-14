@@ -11,8 +11,8 @@ using namespace std;
 void dibujarTablero(sf::RenderWindow& ventana, Tablero& tablero) {
 	for (int fila = 0; fila < FILAS; fila++) {
 		for (int columna = 0; columna < COLUMNAS; columna++) {
-			sf::RectangleShape celda(sf::Vector2f(30, 30));
-			celda.setPosition(300 + columna * 30, 50 + fila * 30);
+			sf::RectangleShape celda(sf::Vector2f(23, 23));
+			celda.setPosition(272 + columna * 23, 55 + fila * 23);
 			
 			int valor = tablero.getCelda(fila, columna);
 			
@@ -37,11 +37,11 @@ void dibujarPieza(sf::RenderWindow& ventana, Pieza& pieza) {
 		for (int columna = 0; columna < 4; columna++) {
 			if (pieza.getCelda(fila, columna) == 1) {
 				
-				sf::RectangleShape celda(sf::Vector2f(30, 30));
+				sf::RectangleShape celda(sf::Vector2f(23, 23));
 				
 				celda.setPosition(
-				300 + (pieza.getColumna() + columna) * 30,
-				50 + (pieza.getFila() + fila) * 30);
+				272 + (pieza.getColumna() + columna) * 23,
+				55 + (pieza.getFila() + fila) * 23);
 				
 				celda.setFillColor(obtenerColor(pieza.getValor()));
 				celda.setOutlineColor(sf::Color::White);
@@ -70,12 +70,22 @@ bool colocarYSiguiente(Pieza& pieza, Tablero& tablero, ColaPiezas& cola, int& pu
 
 
 void iniciarJuego() {
-	sf::RenderWindow ventana(sf::VideoMode(900, 750), "Tetris");
+	sf::RenderWindow ventana(sf::VideoMode(800,600), "Tetris");
+	
 	sf::Font fuente;
+	sf::Texture texturaFondo;
 	
 	if (!fuente.loadFromFile("assets/fonts/Roboto.ttf")) {
 		cout << "Error al cargar la fuente" << endl;
 	}
+	
+	if (!texturaFondo.loadFromFile("assets/images/fondo.png")) {
+		cout << "Error al cargar el fondo" << endl;
+	}
+	
+	sf::Sprite fondo;
+	fondo.setTexture(texturaFondo);
+	
 	
 	Tablero tablero;
 	
@@ -232,16 +242,14 @@ void iniciarJuego() {
 		}
 		
 		ventana.clear();
+		ventana.draw(fondo);
 		
 		dibujarTablero(ventana, tablero);
 		dibujarHold(ventana, hold);
 		dibujarProximas3(ventana, cola);
 		
-		escribirTexto(ventana, fuente, "HOLD", 120, 35, 22);
-		escribirTexto(ventana, fuente, "NEXT", 720, 35, 22);
-		
-		escribirTexto(ventana, fuente, "SCORE\n" + std::to_string(puntaje), 110, 350, 22);
-		escribirTexto(ventana, fuente, "LINES\n" + std::to_string(totalLineas), 110, 450, 22);
+		escribirTexto(ventana, fuente, std::to_string(puntaje), 125, 305, 24);
+		escribirTexto(ventana, fuente, std::to_string(totalLineas), 125, 395, 24);
 		
 		if (pausado) {
 			dibujarPieza(ventana, pieza);
@@ -264,69 +272,25 @@ void iniciarJuego() {
 	}
 }
 void dibujarHold(sf::RenderWindow& ventana, PilaHold& hold) {
-	sf::RectangleShape cuadro(sf::Vector2f(170, 150));
-	cuadro.setPosition(70, 70);
-	cuadro.setFillColor(sf::Color::Black);
-	cuadro.setOutlineColor(sf::Color::White);
-	cuadro.setOutlineThickness(2);
-	
-	ventana.draw(cuadro);
-	
 	if (hold.estaVacia()) {
 		return;
 	}
 	
 	Pieza piezaHold(hold.verTipo());
-	
-	for (int fila = 0; fila < 4; fila++) {
-		for (int columna = 0; columna < 4; columna++) {
-			if (piezaHold.getCelda(fila, columna) == 1) {
-				sf::RectangleShape celda(sf::Vector2f(25, 25));
-				
-				celda.setPosition(
-				105 + columna * 25,
-				100 + fila * 25);
-				
-				celda.setFillColor(obtenerColor(piezaHold.getValor()));
-				celda.setOutlineColor(sf::Color::White);
-				celda.setOutlineThickness(1);
-				
-				ventana.draw(celda);
-			}
-		}
-	}
+	dibujarPiezaPequena(ventana, piezaHold, 145, 165, 20);
 }
+
 void registrarMovimiento(Historial& historial, char movimiento, Pieza& pieza, Tablero& tablero) {
 	historial.agregar(movimiento, pieza, tablero);
 }
-void dibujarProximas3(sf::RenderWindow& ventana, ColaPiezas& cola) {
-	sf::RectangleShape cuadro(sf::Vector2f(170, 350));
-	cuadro.setPosition(660, 70);
-	cuadro.setFillColor(sf::Color::Black);
-	cuadro.setOutlineColor(sf::Color::White);
-	cuadro.setOutlineThickness(2);
 
-	ventana.draw(cuadro);	
-	
+void dibujarProximas3(sf::RenderWindow& ventana, ColaPiezas& cola) {
 	for (int p = 0; p < 3; p++) {
 		char tipo = cola.obtenerPieza(p);
 		
 		if (tipo != ' ') {
 			Pieza siguiente(tipo);
-			
-			for (int fila = 0; fila < 4; fila++) {
-				for (int columna = 0; columna < 4; columna++) {
-					if (siguiente.getCelda(fila, columna) == 1) {
-						sf::RectangleShape celda(sf::Vector2f(20, 20));
-						celda.setPosition(705 + columna * 20, 100 + p * 100 + fila * 20);
-						celda.setFillColor(obtenerColor(siguiente.getValor()));
-						celda.setOutlineColor(sf::Color::White);
-						celda.setOutlineThickness(1);
-						
-						ventana.draw(celda);
-					}
-				}
-			}
+			dibujarPiezaPequena(ventana, siguiente, 635, 145 + p * 80, 18);
 		}
 	}
 }
@@ -366,4 +330,41 @@ void escribirTexto(sf::RenderWindow& ventana, sf::Font& fuente, string texto, in
 	mensaje.setPosition(x, y);
 	
 	ventana.draw(mensaje);
+}
+
+void dibujarPiezaPequena(sf::RenderWindow& ventana, Pieza& pieza, int centroX, int centroY, int tamano) {
+	int minFila = 4;
+	int maxFila = -1;
+	int minColumna = 4;
+	int maxColumna = -1;
+	
+	for (int fila = 0; fila < 4; fila++) {
+		for (int columna = 0; columna < 4; columna++) {
+			if (pieza.getCelda(fila, columna) == 1) {
+				if (fila < minFila) minFila = fila;
+				if (fila > maxFila) maxFila = fila;
+				if (columna < minColumna) minColumna = columna;
+				if (columna > maxColumna) maxColumna = columna;
+			}
+		}
+	}
+	
+	int ancho = (maxColumna - minColumna + 1) * tamano;
+	int alto = (maxFila - minFila + 1) * tamano;
+	
+	int inicioX = centroX - ancho / 2;
+	int inicioY = centroY - alto / 2;
+	
+	for (int fila = minFila; fila <= maxFila; fila++) {
+		for (int columna = minColumna; columna <= maxColumna; columna++) {
+			if (pieza.getCelda(fila, columna) == 1) {
+				sf::RectangleShape celda(sf::Vector2f(tamano, tamano));
+				celda.setPosition(inicioX + (columna - minColumna) * tamano, inicioY + (fila - minFila) * tamano);
+				celda.setFillColor(obtenerColor(pieza.getValor()));
+				celda.setOutlineColor(sf::Color::White);
+				celda.setOutlineThickness(1);
+				ventana.draw(celda);
+			}
+		}
+	}
 }

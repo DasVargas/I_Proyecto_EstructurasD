@@ -3,6 +3,7 @@
 #include "Puntaje.h"
 #include "PilaHold.h"
 #include "Historial.h"
+#include "ColaEventos.h"
 #include <string>
 
 void dibujarTablero(sf::RenderWindow& ventana, Tablero& tablero) {
@@ -47,10 +48,11 @@ void dibujarPieza(sf::RenderWindow& ventana, Pieza& pieza) {
 }
 
 
-bool colocarYSiguiente(Pieza& pieza, Tablero& tablero, ColaPiezas& cola, int& puntaje, bool& usoHold) {
+bool colocarYSiguiente(Pieza& pieza, Tablero& tablero, ColaPiezas& cola,
+					   int& puntaje, bool& usoHold, int& lineasEliminadas) {
 	colocarPieza(pieza, tablero);
-	int lineas = tablero.limpiarFilas();
-	puntaje += calcularPuntos(lineas);
+	lineasEliminadas = tablero.limpiarFilas();
+	puntaje += calcularPuntos(lineasEliminadas);
 	cola.mantenerCola();
 	char tipo = cola.sacar();
 	pieza = Pieza(tipo);
@@ -71,6 +73,7 @@ void iniciarJuego() {
 	
 	PilaHold hold;
 	Historial historial;
+	ColaEventos eventos;
 	
 	char tipo = cola.sacar();
 	Pieza pieza(tipo);
@@ -82,6 +85,8 @@ void iniciarJuego() {
 	float tiempoCaida = 1.0f;
 	bool gameOver = false;
 	int puntaje = 0;
+	int lineasEliminadas = 0;
+	
 	bool usoHold = false;
 	bool enReplay = false;
 	bool replayTerminado = false;
@@ -112,11 +117,16 @@ void iniciarJuego() {
 						registrarMovimiento(historial, 'B', pieza, tablero);
 					}
 					else {
-						if (!colocarYSiguiente(pieza, tablero, cola, puntaje, usoHold)) {
+						if (!colocarYSiguiente(pieza, tablero, cola, puntaje, usoHold, lineasEliminadas)) {
 							gameOver = true;
+							eventos.insertar("GAME OVER", 1);
 							ventana.setTitle("Tetris - GAME OVER");
 						}
 						else {
+							eventos.insertar("PIEZA COLOCADA", 3);
+							if (lineasEliminadas > 0) {
+								eventos.insertar("LINEA ELIMINADA", 2);
+							}
 							registrarMovimiento(historial, 'P', pieza, tablero);
 						}
 					}
@@ -174,11 +184,16 @@ void iniciarJuego() {
 				registrarMovimiento(historial, 'B', pieza, tablero);
 			}
 			else {
-				if (!colocarYSiguiente(pieza, tablero, cola, puntaje, usoHold)) {
+				if (!colocarYSiguiente(pieza, tablero, cola, puntaje, usoHold, lineasEliminadas)) {
 					gameOver = true;
+					eventos.insertar("GAME OVER", 1);
 					ventana.setTitle("Tetris - GAME OVER");
 				}
 				else {
+					eventos.insertar("PIEZA COLOCADA", 3);
+					if (lineasEliminadas > 0) {
+						eventos.insertar("LINEA ELIMINADA", 2);
+					}
 					registrarMovimiento(historial, 'P', pieza, tablero);
 				}
 			}

@@ -10,7 +10,8 @@
 
 void dibujarTablero(sf::RenderWindow& ventana, Tablero& tablero);
 void dibujarPieza(sf::RenderWindow& ventana, Pieza& pieza);
-bool colocarYSiguiente(Pieza& pieza, Tablero& tablero, ColaPiezas& cola, int& puntaje, bool& usoHold);
+bool colocarYSiguiente(Pieza& pieza, Tablero& tablero, ColaPiezas& cola,
+					   int& puntaje, bool& usoHold, int& lineasEliminadas);
 void iniciarJuego();
 void dibujarHold(sf::RenderWindow& ventana, PilaHold& hold);
 void registrarMovimiento(Historial& historial, char movimiento, Pieza& pieza, Tablero& tablero);

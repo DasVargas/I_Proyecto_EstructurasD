@@ -8,7 +8,7 @@
 #include "ColaPiezas.h"
 #include "Movimiento.h"
 #include "Juego.h"
-
+#include "ColaEventos.h"
 using namespace std;
 
 int main() {
@@ -42,6 +42,7 @@ int main() {
 				cout << "3. Cola de piezas" << endl;
 				cout << "4. Movimiento y colisiones" << endl;
 				cout << "5. Caida automatica" << endl;
+				cout << "6. prueba"<<endl;
 				cout << "0. Volver" << endl;
 				cout << "========================" << endl;
 				cout << "Opcion: ";
@@ -213,6 +214,17 @@ int main() {
 					system("pause");
 					break;
 				}
+				case 6:{
+					ColaEventos eventos;
+					
+					eventos.insertar("PIEZA COLOCADA", 3);
+					eventos.insertar("GAME OVER", 1);
+					eventos.insertar("LINEA ELIMINADA", 2);
+					
+					eventos.mostrar();
+					system("pause");
+					break;
+				}
 				case 0:
 					break;
 				default: {
@@ -227,6 +239,7 @@ int main() {
 			break;
 		}
 		
+			
 		case 0:
 			system("cls");
 			cout << "Saliendo..." << endl;

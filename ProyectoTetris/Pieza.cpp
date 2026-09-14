@@ -212,3 +212,14 @@ void Pieza::setOrientacion(int nuevaOrientacion) {
 char Pieza::getTipo() {
 	return tipo;
 }
+int Pieza::getValor() {
+	if (tipo == 'I') return 1;
+	if (tipo == 'O') return 2;
+	if (tipo == 'T') return 3;
+	if (tipo == 'S') return 4;
+	if (tipo == 'Z') return 5;
+	if (tipo == 'J') return 6;
+	if (tipo == 'L') return 7;
+	
+	return 0;
+}

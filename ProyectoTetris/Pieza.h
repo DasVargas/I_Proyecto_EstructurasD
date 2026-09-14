@@ -30,6 +30,7 @@ public:
 	void setOrientacion(int nuevaOrientacion);
 	
 	char getTipo();
+	int getValor();
 };
 
 #endif

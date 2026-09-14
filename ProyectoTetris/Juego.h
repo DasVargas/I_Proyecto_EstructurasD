@@ -17,4 +17,6 @@ void dibujarHold(sf::RenderWindow& ventana, PilaHold& hold);
 void registrarMovimiento(Historial& historial, char movimiento, Pieza& pieza, Tablero& tablero);
 
 void dibujarProximas3(sf::RenderWindow& ventana, ColaPiezas& cola);
+
+sf::Color obtenerColor(int valor);
 #endif

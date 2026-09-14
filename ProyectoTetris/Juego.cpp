@@ -12,10 +12,14 @@ void dibujarTablero(sf::RenderWindow& ventana, Tablero& tablero) {
 			sf::RectangleShape celda(sf::Vector2f(30, 30));
 			celda.setPosition(50 + columna * 30, 50 + fila * 30);
 			
-			if (tablero.getCelda(fila, columna) == 1)
-				celda.setFillColor(sf::Color::Green);
-			else
+			int valor = tablero.getCelda(fila, columna);
+			
+			if (valor != 0) {
+				celda.setFillColor(obtenerColor(valor));
+			}
+			else {
 				celda.setFillColor(sf::Color::Black);
+			}
 			
 			celda.setOutlineColor(sf::Color::White);
 			celda.setOutlineThickness(1);
@@ -37,7 +41,7 @@ void dibujarPieza(sf::RenderWindow& ventana, Pieza& pieza) {
 				50 + (pieza.getColumna() + columna) * 30,
 				50 + (pieza.getFila() + fila) * 30);
 				
-				celda.setFillColor(sf::Color::Green);
+				celda.setFillColor(obtenerColor(pieza.getValor()));
 				celda.setOutlineColor(sf::Color::White);
 				celda.setOutlineThickness(1);
 				
@@ -248,7 +252,7 @@ void dibujarHold(sf::RenderWindow& ventana, PilaHold& hold) {
 				75 + fila * 25
 				);
 				
-				celda.setFillColor(sf::Color::Green);
+				celda.setFillColor(obtenerColor(piezaHold.getValor()));
 				celda.setOutlineColor(sf::Color::White);
 				celda.setOutlineThickness(1);
 				
@@ -280,7 +284,7 @@ void dibujarProximas3(sf::RenderWindow& ventana, ColaPiezas& cola) {
 					if (siguiente.getCelda(fila, columna) == 1) {
 						sf::RectangleShape celda(sf::Vector2f(20, 20));
 						celda.setPosition(430 + columna * 20,245 + p * 100 + fila * 20);
-						celda.setFillColor(sf::Color::Green);
+						celda.setFillColor(obtenerColor(siguiente.getValor()));
 						celda.setOutlineColor(sf::Color::White);
 						celda.setOutlineThickness(1);
 						
@@ -290,4 +294,29 @@ void dibujarProximas3(sf::RenderWindow& ventana, ColaPiezas& cola) {
 			}
 		}
 	}
+}
+
+sf::Color obtenerColor(int valor) {
+	if (valor == 1)
+		return sf::Color::Cyan;
+	
+	if (valor == 2)
+		return sf::Color::Yellow;
+	
+	if (valor == 3)
+		return sf::Color(160, 32, 240);
+	
+	if (valor == 4)
+		return sf::Color::Green;
+	
+	if (valor == 5)
+		return sf::Color::Red;
+	
+	if (valor == 6)
+		return sf::Color::Blue;
+	
+	if (valor == 7)
+		return sf::Color(255, 165, 0);
+	
+	return sf::Color::Black;
 }

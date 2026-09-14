@@ -12,7 +12,7 @@ bool puedeMover(Pieza& pieza, Tablero& tablero, int nuevaFila, int nuevaColumna)
 				if (columnaTablero < 0 || columnaTablero >= COLUMNAS) {
 					return false;
 				}
-				if (tablero.getCelda(filaTablero, columnaTablero) == 1) {
+				if (tablero.getCelda(filaTablero, columnaTablero) != 0){
 					return false;
 				}
 			}
@@ -59,7 +59,7 @@ void colocarPieza(Pieza& pieza, Tablero& tablero) {
 			if (pieza.getCelda(fila, columna) == 1) {
 				int filaTablero = pieza.getFila() + fila;
 				int columnaTablero = pieza.getColumna() + columna;
-				tablero.setCelda(filaTablero, columnaTablero, 1);
+				tablero.setCelda(filaTablero, columnaTablero, pieza.getValor());
 			}
 		}
 	}

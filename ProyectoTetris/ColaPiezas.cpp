@@ -103,3 +103,16 @@ void ColaPiezas::mantenerCola() {
 		generarBolsa();
 	}
 }
+char ColaPiezas::obtenerPieza(int posicion) {
+	NodoPieza* actual = frente;
+	int contador = 0;
+	
+	while (actual != nullptr) {
+		if (contador == posicion) {
+			return actual->tipo;
+		}
+		actual = actual->siguiente;
+		contador++;
+	}
+	return ' ';
+}

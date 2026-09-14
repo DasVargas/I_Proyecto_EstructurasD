@@ -205,6 +205,7 @@ void iniciarJuego() {
 		
 		dibujarTablero(ventana, tablero);
 		dibujarHold(ventana, hold);
+		dibujarProximas3(ventana, cola);
 		
 		if (!gameOver) {
 			dibujarPieza(ventana, pieza);
@@ -258,4 +259,35 @@ void dibujarHold(sf::RenderWindow& ventana, PilaHold& hold) {
 }
 void registrarMovimiento(Historial& historial, char movimiento, Pieza& pieza, Tablero& tablero) {
 	historial.agregar(movimiento, pieza, tablero);
+}
+void dibujarProximas3(sf::RenderWindow& ventana, ColaPiezas& cola) {
+	sf::RectangleShape cuadro(sf::Vector2f(170, 350));
+	cuadro.setPosition(390, 220);
+	cuadro.setFillColor(sf::Color::Black);
+	cuadro.setOutlineColor(sf::Color::White);
+	cuadro.setOutlineThickness(2);
+
+	ventana.draw(cuadro);	
+	
+	for (int p = 0; p < 3; p++) {
+		char tipo = cola.obtenerPieza(p);
+		
+		if (tipo != ' ') {
+			Pieza siguiente(tipo);
+			
+			for (int fila = 0; fila < 4; fila++) {
+				for (int columna = 0; columna < 4; columna++) {
+					if (siguiente.getCelda(fila, columna) == 1) {
+						sf::RectangleShape celda(sf::Vector2f(20, 20));
+						celda.setPosition(430 + columna * 20,245 + p * 100 + fila * 20);
+						celda.setFillColor(sf::Color::Green);
+						celda.setOutlineColor(sf::Color::White);
+						celda.setOutlineThickness(1);
+						
+						ventana.draw(celda);
+					}
+				}
+			}
+		}
+	}
 }

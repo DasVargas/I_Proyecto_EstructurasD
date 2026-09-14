@@ -26,6 +26,7 @@ public:
 	void mostrarProximas3();
 	int contar();
 	void mantenerCola();
+	char obtenerPieza(int posicion);
 };
 
 #endif

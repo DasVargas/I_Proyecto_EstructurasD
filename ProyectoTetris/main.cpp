@@ -104,7 +104,7 @@ int main() {
 					// PANTALLA TOP 10
 					else if (top10) {
 						// VOLVER
-						if (x >= 275 && x <= 525 && >= 515 && y <= 580) {
+						if (x >= 275 && x <= 525 && y >= 515 && y <= 580) {
 							top10 = false;
 							fondo.setTexture(texturaMenu);
 						}

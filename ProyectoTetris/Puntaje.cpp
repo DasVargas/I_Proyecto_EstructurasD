@@ -190,7 +190,6 @@ void compararOrdenamientos() {
 	
 }
 int obtenerTop10(RegistroPuntaje puntajes[]) {
-	
 	ifstream archivo("puntajes.txt");
 	
 	if (!archivo.is_open()) {
@@ -200,9 +199,7 @@ int obtenerTop10(RegistroPuntaje puntajes[]) {
 	RegistroPuntaje todos[100];
 	int cantidad = 0;
 	
-	while (cantidad < 100 &&
-		   archivo >> todos[cantidad].nombre >> todos[cantidad].puntaje) {
-		
+	while (cantidad < 100 && archivo >> todos[cantidad].nombre >> todos[cantidad].puntaje) {
 		cantidad++;
 	}
 	

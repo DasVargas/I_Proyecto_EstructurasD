@@ -6,6 +6,7 @@
 #include "ColaEventos.h"
 #include <string>
 #include <iostream>
+#include <SFML/Audio.hpp>
 using namespace std;
 
 void dibujarTablero(sf::RenderWindow& ventana, Tablero& tablero) {
@@ -152,6 +153,7 @@ void iniciarJuego() {
 	fondo.setTexture(texturaFondo);
 	fondo.setPosition(0, 0);
 	
+	
 	Tablero tablero;
 	
 	ColaPiezas cola;
@@ -188,6 +190,16 @@ void iniciarJuego() {
 	
 	string nombreJugador = "";
 	
+	sf::Music musica;
+	
+	if (!musica.openFromFile("assets/audio/musica.ogg")) {
+		cout << "Error al cargar la musica" << endl;
+	}
+	else {
+		musica.setLoop(true);
+		musica.setVolume(40);
+		musica.play();
+	}
 	while (ventana.isOpen()) {
 		
 		sf::Event evento;
@@ -222,6 +234,13 @@ void iniciarJuego() {
 				
 				pausado = !pausado;
 				relojCaida.restart();
+				
+				if (pausado) {
+					musica.pause();
+				}
+				else {
+					musica.play();
+				}
 			}
 			
 			// CONTROLES NORMALES

@@ -72,6 +72,9 @@ bool colocarYSiguiente(Pieza& pieza, Tablero& tablero, ColaPiezas& cola, int& pu
 void iniciarJuego() {
 	sf::RenderWindow ventana(sf::VideoMode(800,600), "Tetris");
 	
+	sf::View vista(sf::FloatRect(0, 0, 800, 600));
+	ajustarVista(ventana, vista);
+	
 	sf::Font fuente;
 	sf::Texture texturaFondo;
 	
@@ -85,7 +88,7 @@ void iniciarJuego() {
 	
 	sf::Sprite fondo;
 	fondo.setTexture(texturaFondo);
-	
+	fondo.setPosition(0, 0);
 	
 	Tablero tablero;
 	
@@ -95,6 +98,9 @@ void iniciarJuego() {
 	PilaHold hold;
 	Historial historial;
 	ColaEventos eventos;
+	eventos.insertar("BONUS PUNTOS", 15);
+	eventos.insertar("ACTIVAR FANTASMA", 5);
+	eventos.insertar("AUMENTAR VELOCIDAD", 10);
 	
 	char tipo = cola.sacar();
 	Pieza pieza(tipo);
@@ -113,12 +119,16 @@ void iniciarJuego() {
 	bool enReplay = false;
 	bool replayTerminado = false;
 	bool pausado = false;
+	bool fantasmaActiva = false;
 	
 	while (ventana.isOpen()) {
 		sf::Event evento;
 		while (ventana.pollEvent(evento)) {
 			if (evento.type == sf::Event::Closed) {
 				ventana.close();
+			}
+			if (evento.type == sf::Event::Resized) {
+				ajustarVista(ventana, vista);
 			}
 			if (evento.type == sf::Event::KeyPressed &&
 				evento.key.code == sf::Keyboard::P && !gameOver) {
@@ -153,17 +163,15 @@ void iniciarJuego() {
 						
 						if (!continua) {
 							gameOver = true;
-							eventos.insertar("GAME OVER", 1);
 							ventana.setTitle("Tetris - GAME OVER");
 						}
 						else {
-							eventos.insertar("PIEZA COLOCADA", 3);
-							
 							if (lineasEliminadas > 0) {
 								eventos.insertar("LINEA ELIMINADA", 2);
 							}
-							
+							else{
 							registrarMovimiento(historial, 'P', pieza, tablero);
+							}
 						}
 					}
 				}
@@ -214,6 +222,21 @@ void iniciarJuego() {
 				}
 			}
 		}
+		while (eventos.eventoListo(totalLineas)) {
+			string eventoActual = eventos.sacar();
+			
+			if (eventoActual == "ACTIVAR FANTASMA") {
+				fantasmaActiva = true;
+			}
+			
+			if (eventoActual == "AUMENTAR VELOCIDAD") {
+				tiempoCaida = 0.7f;
+			}
+			
+			if (eventoActual == "BONUS PUNTOS") {
+				puntaje += 500;
+			}
+		}
 		
 		if (!gameOver && !pausado &&relojCaida.getElapsedTime().asSeconds() >= tiempoCaida) {
 			if (moverAbajo(pieza, tablero)) {
@@ -226,22 +249,24 @@ void iniciarJuego() {
 				
 				if (!continua) {
 					gameOver = true;
-					eventos.insertar("GAME OVER", 1);
 					ventana.setTitle("Tetris - GAME OVER");
 				}
 				else {
-					eventos.insertar("PIEZA COLOCADA", 3);
 					if (lineasEliminadas > 0) {
 						eventos.insertar("LINEA ELIMINADA", 2);
 					}
+					else{
 					registrarMovimiento(historial, 'P', pieza, tablero);
+					}
+					
 				}
 			}
 			
 			relojCaida.restart();
 		}
 		
-		ventana.clear();
+		ventana.clear(sf::Color::Black);
+		ventana.setView(vista);
 		ventana.draw(fondo);
 		
 		dibujarTablero(ventana, tablero);
@@ -256,6 +281,10 @@ void iniciarJuego() {
 			ventana.setTitle("Tetris - PAUSA");
 		}
 		else if (!gameOver) {
+			if (fantasmaActiva) {
+				dibujarFantasma(ventana, pieza, tablero);
+				
+			}
 			dibujarPieza(ventana, pieza);
 			ventana.setTitle("Tetris - Puntaje: " + std::to_string(puntaje));
 		}
@@ -363,6 +392,53 @@ void dibujarPiezaPequena(sf::RenderWindow& ventana, Pieza& pieza, int centroX, i
 				celda.setFillColor(obtenerColor(pieza.getValor()));
 				celda.setOutlineColor(sf::Color::White);
 				celda.setOutlineThickness(1);
+				ventana.draw(celda);
+			}
+		}
+	}
+}
+void ajustarVista(sf::RenderWindow& ventana, sf::View& vista) {
+	float proporcionVentana = ventana.getSize().x / (float)ventana.getSize().y;
+	float proporcionJuego = 800.0f / 600.0f;
+	
+	float ancho = 1.0f;
+	float alto = 1.0f;
+	float x = 0.0f;
+	float y = 0.0f;
+	
+	if (proporcionVentana > proporcionJuego) {
+		ancho = proporcionJuego / proporcionVentana;
+		x = (1.0f - ancho) / 2.0f;
+	}
+	else {
+		alto = proporcionVentana / proporcionJuego;
+		y = (1.0f - alto) / 2.0f;
+	}
+	
+	vista.setViewport(sf::FloatRect(x, y, ancho, alto));
+	ventana.setView(vista);
+}
+void dibujarFantasma(sf::RenderWindow& ventana, Pieza& pieza, Tablero& tablero) {
+	Pieza fantasma = pieza;
+	
+	while (puedeMover(fantasma, tablero, fantasma.getFila() + 1, fantasma.getColumna())) {
+		fantasma.setFila(fantasma.getFila() + 1);
+	}
+	
+	for (int fila = 0; fila < 4; fila++) {
+		for (int columna = 0; columna < 4; columna++) {
+			if (fantasma.getCelda(fila, columna) == 1) {
+				sf::RectangleShape celda(sf::Vector2f(23, 23));
+				
+				celda.setPosition(272 + (fantasma.getColumna() + columna) * 23, 55 + (fantasma.getFila() + fila) * 23);
+				
+				sf::Color color = obtenerColor(fantasma.getValor());
+				color.a = 70;
+				
+				celda.setFillColor(color);
+				celda.setOutlineColor(obtenerColor(fantasma.getValor()));
+				celda.setOutlineThickness(1);
+				
 				ventana.draw(celda);
 			}
 		}

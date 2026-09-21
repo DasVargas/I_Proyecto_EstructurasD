@@ -23,4 +23,6 @@ void dibujarProximas3(sf::RenderWindow& ventana, ColaPiezas& cola);
 sf::Color obtenerColor(int valor);
 void escribirTexto(sf::RenderWindow& ventana,sf::Font& fuente, string texto, int x, int y, int tamano);
 void dibujarPiezaPequena(sf::RenderWindow& ventana, Pieza& pieza, int centroX, int centroY, int tamano);
+void ajustarVista(sf::RenderWindow& ventana, sf::View& vista);
+void dibujarFantasma(sf::RenderWindow& ventana, Pieza& pieza, Tablero& tablero);
 #endif

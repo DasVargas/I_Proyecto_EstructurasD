@@ -187,4 +187,38 @@ void compararOrdenamientos() {
 		delete[] datosInsertion;
 		delete[] datosMerge;
 	}
+	
+}
+int obtenerTop10(RegistroPuntaje puntajes[]) {
+	
+	ifstream archivo("puntajes.txt");
+	
+	if (!archivo.is_open()) {
+		return 0;
+	}
+	
+	RegistroPuntaje todos[100];
+	int cantidad = 0;
+	
+	while (cantidad < 100 &&
+		   archivo >> todos[cantidad].nombre >> todos[cantidad].puntaje) {
+		
+		cantidad++;
+	}
+	
+	archivo.close();
+	
+	insertionSort(todos, cantidad);
+	
+	int limite = cantidad;
+	
+	if (limite > 10) {
+		limite = 10;
+	}
+	
+	for (int i = 0; i < limite; i++) {
+		puntajes[i] = todos[i];
+	}
+	
+	return limite;
 }

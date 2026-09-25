@@ -141,7 +141,7 @@ void iniciarJuego() {
 	sf::Font fuente;
 	sf::Texture texturaFondo;
 	
-	if (!fuente.loadFromFile("assets/fonts/Roboto.ttf")) {
+	if (!fuente.loadFromFile("assets/fonts/PixelOperator-Bold.ttf")) {
 		cout << "Error al cargar la fuente" << endl;
 	}
 	
@@ -183,6 +183,8 @@ void iniciarJuego() {
 	bool pausado = false;
 	bool fantasmaActiva = false;
 	bool puntajeGuardado = false;
+	
+	bool wPresionada = false;
 	
 	int puntaje = 0;
 	int lineasEliminadas = 0;
@@ -227,7 +229,12 @@ void iniciarJuego() {
 					nombreJugador += static_cast<char>(evento.text.unicode);
 				}
 			}
-			
+			// SOLTAR W
+			if (evento.type == sf::Event::KeyReleased &&
+				evento.key.code == sf::Keyboard::W) {
+				
+				wPresionada = false;
+			}
 			// PAUSA
 			if (evento.type == sf::Event::KeyPressed &&
 				evento.key.code == sf::Keyboard::P && !gameOver) {
@@ -283,7 +290,8 @@ void iniciarJuego() {
 				}
 				
 				// ROTAR
-				if (evento.key.code == sf::Keyboard::W) {
+				if (evento.key.code == sf::Keyboard::W && !wPresionada) {
+					wPresionada = true;
 					int orientacionAnterior = pieza.getOrientacion();
 					rotarPieza(pieza, tablero);
 					if (pieza.getOrientacion() != orientacionAnterior) {

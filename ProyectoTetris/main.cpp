@@ -37,7 +37,7 @@ int main() {
 		
 		sf::Font fuente;
 		
-		if (!fuente.loadFromFile("assets/fonts/Roboto.ttf")) {
+		if (!fuente.loadFromFile("assets/fonts/PixelOperator-Bold.ttf")) {
 			cout << "Error al cargar la fuente" << endl;
 			return 1;
 		}

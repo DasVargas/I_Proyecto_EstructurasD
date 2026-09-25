@@ -56,7 +56,7 @@ void dibujarPieza(sf::RenderWindow& ventana, Pieza& pieza) {
 
 
 bool colocarYSiguiente(Pieza& pieza, Tablero& tablero, ColaPiezas& cola, int& puntaje, bool& usoHold, int& lineasEliminadas) {
-	colocarPieza(pieza, tablero);
+
 	lineasEliminadas = tablero.limpiarFilas();
 	puntaje += calcularPuntos(lineasEliminadas);
 	cola.mantenerCola();
@@ -278,6 +278,9 @@ void iniciarJuego() {
 						registrarMovimiento(historial, 'B', pieza, tablero);
 					}
 					else {
+						colocarPieza(pieza, tablero);
+						
+						animarFilas(ventana, tablero);
 						bool continua = colocarYSiguiente(pieza, tablero, cola, puntaje, usoHold, lineasEliminadas);
 						totalLineas += lineasEliminadas;
 						if (!continua) {
@@ -394,6 +397,10 @@ void iniciarJuego() {
 				registrarMovimiento(historial, 'B', pieza, tablero);
 			}
 			else {
+				colocarPieza(pieza, tablero);
+				
+				animarFilas(ventana, tablero);
+				
 				bool continua = colocarYSiguiente(pieza, tablero, cola, puntaje, usoHold, lineasEliminadas);
 				totalLineas += lineasEliminadas;
 				if (!continua) {
@@ -592,4 +599,30 @@ void dibujarFantasma(sf::RenderWindow& ventana, Pieza& pieza, Tablero& tablero) 
 			}
 		}
 	}
+}
+void animarFilas(sf::RenderWindow& ventana, Tablero& tablero) {
+	
+	dibujarTablero(ventana, tablero);
+	
+	for (int fila = 0; fila < FILAS; fila++) {
+		
+		if (tablero.filaCompleta(fila)) {
+			
+			for (int columna = 0; columna < COLUMNAS; columna++) {
+				
+				sf::RectangleShape celda(sf::Vector2f(23, 23));
+				
+				celda.setPosition(
+								  272 + columna * 23,
+								  55 + fila * 23
+								  );
+				
+				celda.setFillColor(sf::Color::White);
+				ventana.draw(celda);
+			}
+		}
+	}
+	
+	ventana.display();
+	sf::sleep(sf::milliseconds(200));
 }

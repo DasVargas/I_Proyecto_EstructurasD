@@ -62,7 +62,19 @@ bool Tablero::filaCompleta(NodoFila* fila) {
 	}
 	return true;
 }
-
+bool Tablero::filaCompleta(int posicion) {
+	NodoFila* actual = cabeza;
+	
+	for (int i = 0; i < posicion && actual != nullptr; i++) {
+		actual = actual->siguiente;
+	}
+	
+	if (actual == nullptr) {
+		return false;
+	}
+	
+	return filaCompleta(actual);
+}
 void Tablero::eliminarFila(int posicion) {
 	if (cabeza == nullptr) {
 		return;

@@ -25,4 +25,6 @@ void escribirTexto(sf::RenderWindow& ventana,sf::Font& fuente, string texto, int
 void dibujarPiezaPequena(sf::RenderWindow& ventana, Pieza& pieza, int centroX, int centroY, int tamano);
 void ajustarVista(sf::RenderWindow& ventana, sf::View& vista);
 void dibujarFantasma(sf::RenderWindow& ventana, Pieza& pieza, Tablero& tablero);
+
+void animarFilas(sf::RenderWindow& ventana, Tablero& tablero);
 #endif

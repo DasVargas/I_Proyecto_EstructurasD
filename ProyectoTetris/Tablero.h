@@ -21,6 +21,7 @@ public:
 	void mostrarTablero();
 	void insertarFilaInicio();
 	bool filaCompleta(NodoFila* fila);
+	bool filaCompleta(int posicion);
 	void eliminarFila(int posicion);
 	int limpiarFilas();
 	void llenarFila(int posicion);

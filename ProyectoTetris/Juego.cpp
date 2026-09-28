@@ -373,6 +373,10 @@ void iniciarJuego() {
 							replayTerminado = true;
 						}
 					}
+					// RETROCEDER REPLAY
+					if (evento.key.code == sf::Keyboard::Z && enReplay) {
+						historial.retrocederReplay(pieza, tablero);
+					}
 					// SALIR DEL REPLAY
 					if (evento.key.code == sf::Keyboard::Escape && enReplay) {
 						enReplay = false;
@@ -392,7 +396,9 @@ void iniciarJuego() {
 						mouse.y >= 400 && mouse.y <= 445) {
 						
 						if (!puntajeGuardado && !nombreJugador.empty()) {
-							guardarPuntaje(nombreJugador, puntaje);
+							if (calificaTop10(puntaje)) {
+								guardarPuntaje(nombreJugador, puntaje);
+							}
 							puntajeGuardado = true;
 						}
 						else if (puntajeGuardado) {
@@ -466,7 +472,7 @@ void iniciarJuego() {
 		}
 		else if (enReplay) {
 			dibujarPieza(ventana, pieza);
-			
+			escribirTextoCentrado(ventana, fuente, "Z - ANTERIOR", 400, 525, 14);
 			escribirTextoCentrado(ventana, fuente, "ESPACIO - SIGUIENTE", 400, 550, 14);
 			escribirTextoCentrado(ventana, fuente, "ESC - SALIR", 400, 575, 14);
 		}

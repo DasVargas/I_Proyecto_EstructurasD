@@ -140,3 +140,14 @@ bool Historial::avanzarReplay(Pieza& pieza, Tablero& tablero) {
 	
 	return true;
 }
+
+bool Historial::retrocederReplay(Pieza& pieza, Tablero& tablero) {
+	if (replay == nullptr || replay->anterior == nullptr) {
+		return false;
+	}
+	
+	replay = replay->anterior;
+	restaurarEstado(replay, pieza, tablero);
+	
+	return true;
+}

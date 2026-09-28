@@ -39,7 +39,7 @@ public:
 
 	void iniciarReplay(Pieza& pieza, Tablero& tablero);
 	bool avanzarReplay(Pieza& pieza, Tablero& tablero);
-	
+	bool retrocederReplay(Pieza& pieza, Tablero& tablero);
 	void mostrar();
 };
 

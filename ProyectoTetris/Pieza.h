@@ -3,7 +3,6 @@
 
 class Pieza {
 private:
-	
 	char tipo;
 	int forma[4][4][4];
 	
@@ -12,7 +11,6 @@ private:
 	int columna;
 	
 public:
-	
 	Pieza(char tipoPieza);
 	
 	void mostrarPieza();

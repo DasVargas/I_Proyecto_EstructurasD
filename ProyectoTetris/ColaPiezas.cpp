@@ -3,7 +3,6 @@
 #include <cstdlib>
 using namespace std;
 
-
 // Constructor
 ColaPiezas::ColaPiezas() {
 	frente = nullptr;
@@ -88,6 +87,7 @@ void ColaPiezas::mostrarProximas3() {
 	}
 	cout << endl;
 }
+
 int ColaPiezas::contar() {
 	int contador = 0;
 	NodoPieza* actual = frente;
@@ -103,6 +103,7 @@ void ColaPiezas::mantenerCola() {
 		generarBolsa();
 	}
 }
+
 char ColaPiezas::obtenerPieza(int posicion) {
 	NodoPieza* actual = frente;
 	int contador = 0;

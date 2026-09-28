@@ -8,12 +8,10 @@ struct NodoPieza {
 
 class ColaPiezas {
 private:
-	
 	NodoPieza* frente;
 	NodoPieza* final;
 	
 public:
-	
 	ColaPiezas();
 	~ColaPiezas();
 	

@@ -73,13 +73,12 @@ int main() {
 					
 					// MENU PRINCIPAL
 					if (!ayuda && !top10) {
-						
 						// JUGAR
 						if (x >= 279 && x <= 524 && y >= 238 && y <= 299) {
 							jugar = true;
 							ventana.close();
 						}
-						
+	
 						// AYUDA
 						if (x >= 277 && x <= 521 && y >= 327 && y <= 382) {
 							ayuda = true;
@@ -102,7 +101,6 @@ int main() {
 					
 					// PANTALLA DE AYUDA
 					else if (ayuda) {
-						
 						// VOLVER
 						if (x >= 275 && x <= 525 && y >= 515 && y <= 580) {
 							ayuda = false;
@@ -112,7 +110,6 @@ int main() {
 					
 					// PANTALLA TOP 10
 					else if (top10) {
-						
 						// CAMBIAR METODO
 						if (x >= 560 && x <= 790 && y >= 515 && y <= 555) {
 							usarInsertion = !usarInsertion;
@@ -135,7 +132,6 @@ int main() {
 			if (top10) {
 				
 				for (int i = 0; i < cantidadTop; i++) {
-					
 					sf::Text nombre;
 					nombre.setFont(fuente);
 					nombre.setString(puntajes[i].nombre);
@@ -151,6 +147,7 @@ int main() {
 					ventana.draw(nombre);
 					ventana.draw(puntos);
 				}
+				
 				sf::RectangleShape cuadroMetodo(sf::Vector2f(210, 65));
 				cuadroMetodo.setPosition(555, 515);
 				cuadroMetodo.setFillColor(sf::Color(15, 15, 35));

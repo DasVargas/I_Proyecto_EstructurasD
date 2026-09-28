@@ -12,8 +12,7 @@ using namespace std;
 
 void dibujarTablero(sf::RenderWindow& ventana, Tablero& tablero);
 void dibujarPieza(sf::RenderWindow& ventana, Pieza& pieza);
-bool colocarYSiguiente(Pieza& pieza, Tablero& tablero, ColaPiezas& cola,
-					   int& puntaje, bool& usoHold, int& lineasEliminadas);
+bool prepararSiguientePieza(Pieza& pieza, Tablero& tablero, ColaPiezas& cola, int& puntaje, bool& usoHold, int& lineasEliminadas);
 void iniciarJuego();
 void dibujarHold(sf::RenderWindow& ventana, PilaHold& hold);
 void registrarMovimiento(Historial& historial, char movimiento, Pieza& pieza, Tablero& tablero);
@@ -27,6 +26,5 @@ void ajustarVista(sf::RenderWindow& ventana, sf::View& vista);
 void dibujarFantasma(sf::RenderWindow& ventana, Pieza& pieza, Tablero& tablero);
 
 void animarFilas(sf::RenderWindow& ventana, Tablero& tablero);
-void escribirTextoCentrado(sf::RenderWindow& ventana, sf::Font& fuente,
-						   string texto, int x, int y, int tamano);
+void escribirTextoCentrado(sf::RenderWindow& ventana, sf::Font& fuente, string texto, int x, int y, int tamano);
 #endif

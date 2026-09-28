@@ -38,6 +38,7 @@ void guardarPuntaje(string nombre, int puntaje) {
 		archivo.close();
 	}
 }
+
 void mostrarPuntajes() {
 	ifstream archivo("puntajes.txt");
 	
@@ -51,6 +52,7 @@ void mostrarPuntajes() {
 		archivo.close();
 	}
 }
+
 void insertionSort(RegistroPuntaje puntajes[], int cantidad) {
 	for (int i = 1; i < cantidad; i++) {
 		RegistroPuntaje aux = puntajes[i];
@@ -160,7 +162,6 @@ void compararOrdenamientos() {
 		
 		// Generamos los mismos datos para ambos algoritmos
 		for (int i = 0; i < cantidad; i++) {
-			
 			datos[i].nombre = "Jugador";
 			datos[i].puntaje = rand() % 100000;
 			
@@ -198,6 +199,7 @@ void compararOrdenamientos() {
 	}
 	
 }
+
 int obtenerTop10(RegistroPuntaje puntajes[], bool usarInsertion) {
 	ifstream archivo("puntajes.txt");
 	

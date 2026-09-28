@@ -54,22 +54,7 @@ void dibujarPieza(sf::RenderWindow& ventana, Pieza& pieza) {
 	}
 }
 
-
-bool colocarYSiguiente(Pieza& pieza, Tablero& tablero, ColaPiezas& cola, int& puntaje, bool& usoHold, int& lineasEliminadas) {
-
-	lineasEliminadas = tablero.limpiarFilas();
-	puntaje += calcularPuntos(lineasEliminadas);
-	cola.mantenerCola();
-	char tipo = cola.sacar();
-	pieza = Pieza(tipo);
-	usoHold = false;
-	if (!puedeMover(pieza, tablero, pieza.getFila(), pieza.getColumna())) {
-		return false;
-	}
-	return true;
-}
-void dibujarGameOver(sf::RenderWindow& ventana, sf::Font& fuente, int puntaje, string nombreJugador, bool puntajeGuardado) {
-	
+void dibujarModalFinPartida(sf::RenderWindow& ventana, sf::Font& fuente, int puntaje, string nombreJugador, bool puntajeGuardado) {
 	// Oscurecer el juego de atras
 	sf::RectangleShape oscuro(sf::Vector2f(800, 600));
 	oscuro.setFillColor(sf::Color(0, 0, 0, 180));
@@ -103,7 +88,7 @@ void dibujarGameOver(sf::RenderWindow& ventana, sf::Font& fuente, int puntaje, s
 		escribirTextoCentrado(ventana, fuente, "GUARDAR PUNTAJE", 400, 405, 16);
 	}
 	else {
-		escribirTextoCentrado(ventana, fuente, "PUNTAJE GUARDADO", 400, 165, 22);
+		escribirTextoCentrado(ventana, fuente, "FIN DE PARTIDA", 400, 165, 22);
 		escribirTextoCentrado(ventana, fuente, "PUNTAJE FINAL", 400, 220, 16);
 		escribirTextoCentrado(ventana, fuente, to_string(puntaje), 400, 245, 22);
 		escribirTextoCentrado(ventana, fuente, "R - VER REPLAY", 400, 300, 16);
@@ -112,7 +97,6 @@ void dibujarGameOver(sf::RenderWindow& ventana, sf::Font& fuente, int puntaje, s
 }
 
 void escribirTextoCentrado(sf::RenderWindow& ventana, sf::Font& fuente, string texto, int x, int y, int tamano) {
-	
 	sf::Text mensaje;
 	
 	mensaje.setFont(fuente);
@@ -158,6 +142,17 @@ void iniciarJuego() {
 		cout << "Error al cargar la fuente" << endl;
 	}
 	
+	sf::Music musica;
+	
+	if (!musica.openFromFile("assets/audio/musica.ogg")) {
+		cout << "Error al cargar la musica" << endl;
+	}
+	else {
+		musica.setLoop(true);
+		musica.setVolume(40);
+		musica.play();
+	}
+	
 	if (!texturaFondo.loadFromFile("assets/images/fondo.png")) {
 		cout << "Error al cargar el fondo" << endl;
 	}
@@ -196,7 +191,6 @@ void iniciarJuego() {
 	bool pausado = false;
 	bool fantasmaActiva = false;
 	bool puntajeGuardado = false;
-	
 	bool wPresionada = false;
 	
 	int puntaje = 0;
@@ -205,16 +199,6 @@ void iniciarJuego() {
 	
 	string nombreJugador = "";
 	
-	sf::Music musica;
-	
-	if (!musica.openFromFile("assets/audio/musica.ogg")) {
-		cout << "Error al cargar la musica" << endl;
-	}
-	else {
-		musica.setLoop(true);
-		musica.setVolume(40);
-		musica.play();
-	}
 	while (ventana.isOpen()) {
 		
 		sf::Event evento;
@@ -232,7 +216,6 @@ void iniciarJuego() {
 			// ESCRIBIR NOMBRE EN GAME OVER
 			if (evento.type == sf::Event::TextEntered &&
 				gameOver && !puntajeGuardado && !enReplay) {
-				
 				if (evento.text.unicode == 8) {
 					if (!nombreJugador.empty()) {
 						nombreJugador.erase(nombreJugador.size() - 1);
@@ -294,7 +277,7 @@ void iniciarJuego() {
 						colocarPieza(pieza, tablero);
 						
 						animarFilas(ventana, tablero);
-						bool continua = colocarYSiguiente(pieza, tablero, cola, puntaje, usoHold, lineasEliminadas);
+						bool continua = prepararSiguientePieza(pieza, tablero, cola, puntaje, usoHold, lineasEliminadas);
 						totalLineas += lineasEliminadas;
 						if (!continua) {
 							gameOver = true;
@@ -369,7 +352,6 @@ void iniciarJuego() {
 					// AVANZAR REPLAY
 					if (evento.key.code == sf::Keyboard::Space && enReplay) {
 						if (!historial.avanzarReplay(pieza, tablero)) {
-							enReplay = false;
 							replayTerminado = true;
 						}
 					}
@@ -426,7 +408,7 @@ void iniciarJuego() {
 		// CAIDA AUTOMATICA
 		if (!gameOver && !pausado &&
 			relojCaida.getElapsedTime().asSeconds() >= tiempoCaida) {
-
+			
 			if (moverAbajo(pieza, tablero)) {
 				registrarMovimiento(historial, 'B', pieza, tablero);
 			}
@@ -435,7 +417,7 @@ void iniciarJuego() {
 				
 				animarFilas(ventana, tablero);
 				
-				bool continua = colocarYSiguiente(pieza, tablero, cola, puntaje, usoHold, lineasEliminadas);
+				bool continua = prepararSiguientePieza(pieza, tablero, cola, puntaje, usoHold, lineasEliminadas);
 				totalLineas += lineasEliminadas;
 				if (!continua) {
 					gameOver = true;
@@ -486,12 +468,26 @@ void iniciarJuego() {
 		}
 		// MODAL DE GAME OVER
 		if (gameOver && !enReplay) {
-			dibujarGameOver(ventana, fuente, puntaje, nombreJugador, puntajeGuardado);
+			dibujarModalFinPartida(ventana, fuente, puntaje, nombreJugador, puntajeGuardado);
 		}
 		
 		ventana.display();
 	}
 }
+
+bool prepararSiguientePieza(Pieza& pieza, Tablero& tablero, ColaPiezas& cola, int& puntaje, bool& usoHold, int& lineasEliminadas) {
+	lineasEliminadas = tablero.limpiarFilas();
+	puntaje += calcularPuntos(lineasEliminadas);
+	cola.mantenerCola();
+	char tipo = cola.sacar();
+	pieza = Pieza(tipo);
+	usoHold = false;
+	if (!puedeMover(pieza, tablero, pieza.getFila(), pieza.getColumna())) {
+		return false;
+	}
+	return true;
+}
+
 void dibujarHold(sf::RenderWindow& ventana, PilaHold& hold) {
 	if (hold.estaVacia()) {
 		return;

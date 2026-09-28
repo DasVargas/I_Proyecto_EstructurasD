@@ -1,9 +1,8 @@
 #ifndef PUNTAJE_H
 #define PUNTAJE_H
-
 #include <string>
-
 using namespace std;
+
 
 struct RegistroPuntaje {
 	string nombre;

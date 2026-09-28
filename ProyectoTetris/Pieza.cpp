@@ -206,12 +206,15 @@ void Pieza::rotar() {
 		orientacion = 0;
 	}
 }
+
 void Pieza::setOrientacion(int nuevaOrientacion) {
 	orientacion = nuevaOrientacion;
 }
+
 char Pieza::getTipo() {
 	return tipo;
 }
+
 int Pieza::getValor() {
 	if (tipo == 'I') return 1;
 	if (tipo == 'O') return 2;

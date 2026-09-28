@@ -353,7 +353,11 @@ void iniciarJuego() {
 				// GUARDAR PUNTAJE
 				if (evento.key.code == sf::Keyboard::Enter &&
 					!puntajeGuardado && !nombreJugador.empty()) {
-					guardarPuntaje(nombreJugador, puntaje);
+					
+					if (calificaTop10(puntaje)) {
+						guardarPuntaje(nombreJugador, puntaje);
+					}
+					
 					puntajeGuardado = true;
 				}
 					// INICIAR REPLAY
@@ -629,7 +633,6 @@ void dibujarFantasma(sf::RenderWindow& ventana, Pieza& pieza, Tablero& tablero) 
 	}
 }
 void animarFilas(sf::RenderWindow& ventana, Tablero& tablero) {
-	
 	dibujarTablero(ventana, tablero);
 	
 	for (int fila = 0; fila < FILAS; fila++) {
@@ -637,7 +640,6 @@ void animarFilas(sf::RenderWindow& ventana, Tablero& tablero) {
 		if (tablero.filaCompleta(fila)) {
 			
 			for (int columna = 0; columna < COLUMNAS; columna++) {
-				
 				sf::RectangleShape celda(sf::Vector2f(23, 23));
 				
 				celda.setPosition(

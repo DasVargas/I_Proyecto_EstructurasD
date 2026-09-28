@@ -20,7 +20,16 @@ int calcularPuntos(int lineas) {
 	
 	return 0;
 }
-
+bool calificaTop10(int puntaje) {
+	RegistroPuntaje puntajes[10];
+	int cantidad = obtenerTop10(puntajes, true);
+	
+	if (cantidad < 10) {
+		return true;
+	}
+	
+	return puntaje > puntajes[9].puntaje;
+}
 void guardarPuntaje(string nombre, int puntaje) {
 	ofstream archivo("puntajes.txt", ios::app);
 	
@@ -189,7 +198,7 @@ void compararOrdenamientos() {
 	}
 	
 }
-int obtenerTop10(RegistroPuntaje puntajes[]) {
+int obtenerTop10(RegistroPuntaje puntajes[], bool usarInsertion) {
 	ifstream archivo("puntajes.txt");
 	
 	if (!archivo.is_open()) {
@@ -205,7 +214,12 @@ int obtenerTop10(RegistroPuntaje puntajes[]) {
 	
 	archivo.close();
 	
-	insertionSort(todos, cantidad);
+	if (usarInsertion) {
+		insertionSort(todos, cantidad);
+	}
+	else {
+		mergeSort(todos, 0, cantidad - 1);
+	}
 	
 	int limite = cantidad;
 	

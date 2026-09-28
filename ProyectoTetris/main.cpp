@@ -6,6 +6,7 @@
 #include "Puntaje.h"
 
 using namespace std;
+
 int main() {
 	
 	srand(time(NULL));
@@ -51,6 +52,7 @@ int main() {
 		
 		RegistroPuntaje puntajes[10];
 		int cantidadTop = 0;
+		bool usarInsertion = true;
 		
 		while (ventana.isOpen()) {
 			
@@ -87,9 +89,10 @@ int main() {
 						// TOP 10
 						if (x >= 276 && x <= 523 && y >= 413 && y <= 466) {
 							top10 = true;
-							cantidadTop = obtenerTop10(puntajes);
+							cantidadTop = obtenerTop10(puntajes, usarInsertion);
 							fondo.setTexture(texturaTop10);
 						}
+						
 						// SALIR
 						if (x >= 272 && x <= 520 && y >= 490 && y <= 540) {
 							programaAbierto = false;
@@ -99,6 +102,7 @@ int main() {
 					
 					// PANTALLA DE AYUDA
 					else if (ayuda) {
+						
 						// VOLVER
 						if (x >= 275 && x <= 525 && y >= 515 && y <= 580) {
 							ayuda = false;
@@ -108,6 +112,13 @@ int main() {
 					
 					// PANTALLA TOP 10
 					else if (top10) {
+						
+						// CAMBIAR METODO
+						if (x >= 560 && x <= 790 && y >= 515 && y <= 555) {
+							usarInsertion = !usarInsertion;
+							cantidadTop = obtenerTop10(puntajes, usarInsertion);
+						}
+						
 						// VOLVER
 						if (x >= 275 && x <= 525 && y >= 515 && y <= 580) {
 							top10 = false;
@@ -120,9 +131,11 @@ int main() {
 			ventana.clear();
 			ventana.draw(fondo);
 			
-			// MOSTRAR LOS PUNTAJES 
+			// MOSTRAR LOS PUNTAJES
 			if (top10) {
+				
 				for (int i = 0; i < cantidadTop; i++) {
+					
 					sf::Text nombre;
 					nombre.setFont(fuente);
 					nombre.setString(puntajes[i].nombre);
@@ -138,6 +151,35 @@ int main() {
 					ventana.draw(nombre);
 					ventana.draw(puntos);
 				}
+				sf::RectangleShape cuadroMetodo(sf::Vector2f(210, 65));
+				cuadroMetodo.setPosition(555, 515);
+				cuadroMetodo.setFillColor(sf::Color(15, 15, 35));
+				cuadroMetodo.setOutlineThickness(2);
+				cuadroMetodo.setOutlineColor(sf::Color::Cyan);
+				
+				ventana.draw(cuadroMetodo);
+				// BOTON CAMBIAR METODO
+				sf::Text cambiar;
+				cambiar.setFont(fuente);
+				cambiar.setString("CAMBIAR METODO");
+				cambiar.setCharacterSize(14);
+				cambiar.setPosition(568, 526);
+				ventana.draw(cambiar);
+				
+				// NOMBRE DEL METODO
+				sf::Text metodo;
+				metodo.setFont(fuente);
+				metodo.setCharacterSize(12);
+				
+				if (usarInsertion) {
+					metodo.setString("INSERTION SORT");
+				}
+				else {
+					metodo.setString("MERGE SORT");
+				}
+				
+				metodo.setPosition(590, 552);
+				ventana.draw(metodo);
 			}
 			
 			ventana.display();

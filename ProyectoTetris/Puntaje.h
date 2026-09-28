@@ -18,8 +18,9 @@ void mostrarPuntajes();
 void insertionSort(RegistroPuntaje puntajes[], int cantidad);
 
 void mostrarTop10();
-int obtenerTop10(RegistroPuntaje puntajes[]);
+int obtenerTop10(RegistroPuntaje puntajes[], bool usarInsertion);
 
+bool calificaTop10(int puntaje);
 void merge(RegistroPuntaje puntajes[], int inicio, int medio, int fin);
 void mergeSort(RegistroPuntaje puntajes[], int inicio, int fin);
 void compararOrdenamientos();

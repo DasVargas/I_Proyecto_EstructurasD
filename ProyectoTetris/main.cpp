@@ -37,7 +37,7 @@ int main() {
 		
 		sf::Font fuente;
 		
-		if (!fuente.loadFromFile("assets/fonts/PixelOperator-Bold.ttf")) {
+		if (!fuente.loadFromFile("assets/fonts/Orbitron-Regular.ttf")) {
 			cout << "Error al cargar la fuente" << endl;
 			return 1;
 		}
@@ -90,6 +90,11 @@ int main() {
 							cantidadTop = obtenerTop10(puntajes);
 							fondo.setTexture(texturaTop10);
 						}
+						// SALIR
+						if (x >= 272 && x <= 520 && y >= 490 && y <= 540) {
+							programaAbierto = false;
+							ventana.close();
+						}
 					}
 					
 					// PANTALLA DE AYUDA
@@ -122,7 +127,7 @@ int main() {
 					nombre.setFont(fuente);
 					nombre.setString(puntajes[i].nombre);
 					nombre.setCharacterSize(16);
-					nombre.setPosition(300, 174 + i * 31);
+					nombre.setPosition(270, 174 + i * 31);
 					
 					sf::Text puntos;
 					puntos.setFont(fuente);

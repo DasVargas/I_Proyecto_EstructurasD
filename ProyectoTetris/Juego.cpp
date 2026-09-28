@@ -68,51 +68,64 @@ bool colocarYSiguiente(Pieza& pieza, Tablero& tablero, ColaPiezas& cola, int& pu
 	}
 	return true;
 }
-void dibujarGameOver(sf::RenderWindow& ventana, sf::Font& fuente,int puntaje, string nombreJugador, bool puntajeGuardado) {
-	// Oscurece el juego que queda detras
+void dibujarGameOver(sf::RenderWindow& ventana, sf::Font& fuente, int puntaje, string nombreJugador, bool puntajeGuardado) {
+	
+	// Oscurecer el juego de atras
 	sf::RectangleShape oscuro(sf::Vector2f(800, 600));
 	oscuro.setFillColor(sf::Color(0, 0, 0, 180));
 	ventana.draw(oscuro);
 	
-	// Cuadro principal
-	sf::RectangleShape cuadro(sf::Vector2f(420, 350));
-	cuadro.setPosition(190, 125);
-	cuadro.setFillColor(sf::Color(15, 15, 35));
-	cuadro.setOutlineThickness(4);
-	cuadro.setOutlineColor(sf::Color::Cyan);
-	ventana.draw(cuadro);
+	// Imagen del modal
+	sf::Texture texturaModal;
+	
+	if (!texturaModal.loadFromFile("assets/images/gameover.png")) {
+		cout << "Error al cargar el modal" << endl;
+		return;
+	}
+	
+	sf::Sprite modal;
+	modal.setTexture(texturaModal);
+	
+	// Ajustar imagen a 420 x 350
+	modal.setScale(420.0f / texturaModal.getSize().x, 350.0f / texturaModal.getSize().y);
+	
+	// Centrar modal
+	modal.setPosition(190, 125);
+	
+	ventana.draw(modal);
 	
 	if (!puntajeGuardado) {
-		escribirTexto(ventana, fuente, "GAME OVER", 310, 150, 32);
-		
-		escribirTexto(ventana, fuente, "PUNTAJE FINAL", 315, 205, 20);
-		escribirTexto(ventana, fuente, to_string(puntaje), 380, 235, 24);
-		
-		escribirTexto(ventana, fuente, "NOMBRE", 350, 285, 18);
-		escribirTexto(ventana, fuente, nombreJugador, 300, 315, 22);
-		
-		escribirTexto(ventana, fuente, "ENTER - GUARDAR PUNTAJE", 270, 385, 18);
+		escribirTextoCentrado(ventana, fuente, "GAME OVER", 400, 155, 28);
+		escribirTextoCentrado(ventana, fuente, "PUNTAJE FINAL", 400, 215, 16);
+		escribirTextoCentrado(ventana, fuente, to_string(puntaje), 400, 240, 22);
+		escribirTextoCentrado(ventana, fuente, "NOMBRE", 400, 290, 16);
+		escribirTextoCentrado(ventana, fuente, nombreJugador, 400, 320, 20);
+		escribirTextoCentrado(ventana, fuente, "GUARDAR PUNTAJE", 400, 405, 16);
 	}
 	else {
-		escribirTexto(ventana, fuente, "PUNTAJE GUARDADO", 285, 190, 26);
-		
-		escribirTexto(ventana, fuente, "PUNTAJE FINAL", 315, 245, 20);
-		escribirTexto(ventana, fuente, to_string(puntaje), 380, 275, 24);
-		
-		escribirTexto(ventana, fuente, "R - VER REPLAY", 325, 320, 18);
-		escribirTexto(ventana, fuente, "ESPACIO - SIGUIENTE PASO", 285, 350, 16);
-		
-		sf::RectangleShape botonVolver(sf::Vector2f(220, 45));
-		botonVolver.setPosition(290, 390);
-		botonVolver.setFillColor(sf::Color(30, 30, 60));
-		botonVolver.setOutlineThickness(2);
-		botonVolver.setOutlineColor(sf::Color::Cyan);
-		
-		ventana.draw(botonVolver);
-		
-		escribirTexto(ventana, fuente, "VOLVER AL MENU", 320, 400, 18);
+		escribirTextoCentrado(ventana, fuente, "PUNTAJE GUARDADO", 400, 165, 22);
+		escribirTextoCentrado(ventana, fuente, "PUNTAJE FINAL", 400, 220, 16);
+		escribirTextoCentrado(ventana, fuente, to_string(puntaje), 400, 245, 22);
+		escribirTextoCentrado(ventana, fuente, "R - VER REPLAY", 400, 300, 16);
+		escribirTextoCentrado(ventana, fuente, "VOLVER AL MENU", 400, 405, 16);
 	}
 }
+
+void escribirTextoCentrado(sf::RenderWindow& ventana, sf::Font& fuente, string texto, int x, int y, int tamano) {
+	
+	sf::Text mensaje;
+	
+	mensaje.setFont(fuente);
+	mensaje.setString(texto);
+	mensaje.setCharacterSize(tamano);
+	mensaje.setFillColor(sf::Color::White);
+	
+	sf::FloatRect limites = mensaje.getLocalBounds();
+	mensaje.setOrigin(limites.left + limites.width / 2, 0);
+	mensaje.setPosition(x, y);
+	
+	ventana.draw(mensaje);
+}					 
 
 void dibujarPausa(sf::RenderWindow& ventana, sf::Font& fuente) {
 	// Oscurecer el juego
@@ -128,8 +141,8 @@ void dibujarPausa(sf::RenderWindow& ventana, sf::Font& fuente) {
 	cuadro.setOutlineColor(sf::Color::Cyan);
 	ventana.draw(cuadro);
 	
-	escribirTexto(ventana, fuente, "JUEGO PAUSADO", 285, 245, 30);
-	escribirTexto(ventana, fuente, "P - CONTINUAR JUGANDO", 275, 325, 18);
+	escribirTextoCentrado(ventana, fuente, "JUEGO PAUSADO", 400, 245, 22);
+	escribirTextoCentrado(ventana, fuente, "P - CONTINUAR JUGANDO", 400, 325, 16);
 }
 
 void iniciarJuego() {
@@ -141,7 +154,7 @@ void iniciarJuego() {
 	sf::Font fuente;
 	sf::Texture texturaFondo;
 	
-	if (!fuente.loadFromFile("assets/fonts/PixelOperator-Bold.ttf")) {
+	if (!fuente.loadFromFile("assets/fonts/Orbitron-Regular.ttf")) {
 		cout << "Error al cargar la fuente" << endl;
 	}
 	
@@ -285,6 +298,7 @@ void iniciarJuego() {
 						totalLineas += lineasEliminadas;
 						if (!continua) {
 							gameOver = true;
+							musica.stop();
 						}
 						else {
 							registrarMovimiento(historial, 'P', pieza, tablero);
@@ -348,7 +362,6 @@ void iniciarJuego() {
 						enReplay = true;
 						replayTerminado = false;
 					}
-					
 					// AVANZAR REPLAY
 					if (evento.key.code == sf::Keyboard::Space && enReplay) {
 						if (!historial.avanzarReplay(pieza, tablero)) {
@@ -356,10 +369,15 @@ void iniciarJuego() {
 							replayTerminado = true;
 						}
 					}
+					// SALIR DEL REPLAY
+					if (evento.key.code == sf::Keyboard::Escape && enReplay) {
+						enReplay = false;
+						replayTerminado = true;
+					}
 			}
-			// MODAL 
+			// BOTONES DEL MODAL
 			if (evento.type == sf::Event::MouseButtonPressed &&
-				gameOver && puntajeGuardado && !enReplay) {
+				gameOver && !enReplay) {
 				
 				if (evento.mouseButton.button == sf::Mouse::Left) {
 					
@@ -369,7 +387,13 @@ void iniciarJuego() {
 					if (mouse.x >= 290 && mouse.x <= 510 &&
 						mouse.y >= 400 && mouse.y <= 445) {
 						
-						ventana.close();
+						if (!puntajeGuardado && !nombreJugador.empty()) {
+							guardarPuntaje(nombreJugador, puntaje);
+							puntajeGuardado = true;
+						}
+						else if (puntajeGuardado) {
+							ventana.close();
+						}
 					}
 				}
 			}
@@ -405,6 +429,7 @@ void iniciarJuego() {
 				totalLineas += lineasEliminadas;
 				if (!continua) {
 					gameOver = true;
+					musica.stop();
 				}
 				else {
 					registrarMovimiento(historial, 'P', pieza, tablero);
@@ -437,6 +462,9 @@ void iniciarJuego() {
 		}
 		else if (enReplay) {
 			dibujarPieza(ventana, pieza);
+			
+			escribirTextoCentrado(ventana, fuente, "ESPACIO - SIGUIENTE", 400, 550, 14);
+			escribirTextoCentrado(ventana, fuente, "ESC - SALIR", 400, 575, 14);
 		}
 		else if (replayTerminado) {
 			dibujarPieza(ventana, pieza);

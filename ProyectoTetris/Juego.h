@@ -27,4 +27,6 @@ void ajustarVista(sf::RenderWindow& ventana, sf::View& vista);
 void dibujarFantasma(sf::RenderWindow& ventana, Pieza& pieza, Tablero& tablero);
 
 void animarFilas(sf::RenderWindow& ventana, Tablero& tablero);
+void escribirTextoCentrado(sf::RenderWindow& ventana, sf::Font& fuente,
+						   string texto, int x, int y, int tamano);
 #endif

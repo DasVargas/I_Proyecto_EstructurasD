@@ -15,11 +15,11 @@ tab_width=4
 tab_use_spaces=0
 explorer_path=.
 inherits_from=
-current_source=Juego.h
+current_source=Juego.cpp
 path_char=\
 [source]
 path=main.cpp
-cursor=39:59
+cursor=39:57
 open=true
 [source]
 path=Tablero.cpp
@@ -38,7 +38,7 @@ cursor=61:16
 open=true
 [source]
 path=Juego.cpp
-cursor=282:17
+cursor=632:24
 open=true
 [source]
 path=Puntaje.cpp
@@ -70,7 +70,7 @@ path=Movimiento.h
 cursor=0:0
 [header]
 path=Juego.h
-cursor=28:62
+cursor=30:49
 marker=28
 open=true
 [header]
